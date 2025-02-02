@@ -103,7 +103,7 @@ CLASS /vno/2ui5_cl_core_srv_json IMPLEMENTATION.
               IF sy-subrc <> 0.
                 CONTINUE.
               ENDIF.
-*              ASSERT sy-subrc = 0.
+
               ajson->set( iv_ignore_empty = abap_false
                           iv_path         = `/`
                           iv_val          = <attribute> ).

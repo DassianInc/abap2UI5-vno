@@ -71,7 +71,7 @@ CLASS /vno/2ui5_cl_util DEFINITION
         v4         TYPE string,
         timestampl TYPE timestampl,
       END OF ty_s_msg,
-      ty_t_msg TYPE STANDARD TABLE OF ty_S_msg WITH EMPTY KEY.
+      ty_t_msg TYPE STANDARD TABLE OF ty_s_msg WITH EMPTY KEY.
 
     CLASS-METHODS ui5_get_msg_type
       IMPORTING
@@ -449,8 +449,6 @@ CLASS /vno/2ui5_cl_util DEFINITION
         !table        TYPE any
       RETURNING
         VALUE(result) TYPE string.
-
-    CLASS-METHODS check_raise_srtti_installed.
 
     CLASS-METHODS rtti_check_clike
       IMPORTING
@@ -1210,8 +1208,6 @@ CLASS /vno/2ui5_cl_util IMPLEMENTATION.
 
   METHOD xml_srtti_parse.
 
-    check_raise_srtti_installed( ).
-
     DATA srtti TYPE REF TO object.
     CALL TRANSFORMATION id SOURCE XML rtti_data RESULT srtti = srtti.
 
@@ -1231,17 +1227,39 @@ CLASS /vno/2ui5_cl_util IMPLEMENTATION.
 
   METHOD xml_srtti_stringify.
 
-    check_raise_srtti_installed( ).
+    IF rtti_check_class_exists( 'ZCL_SRTTI_TYPEDESCR' ) = abap_true.
 
-    DATA srtti TYPE REF TO object.
-    DATA(lv_classname) = 'ZCL_SRTTI_TYPEDESCR'.
-    CALL METHOD (lv_classname)=>('CREATE_BY_DATA_OBJECT')
-      EXPORTING
-        data_object = data
-      RECEIVING
-        srtti       = srtti.
+      DATA srtti TYPE REF TO object.
+      DATA(lv_classname) = `ZCL_SRTTI_TYPEDESCR`.
+      CALL METHOD (lv_classname)=>('CREATE_BY_DATA_OBJECT')
+        EXPORTING
+          data_object = data
+        RECEIVING
+          srtti       = srtti.
 
-    CALL TRANSFORMATION id SOURCE srtti = srtti dobj = data RESULT XML result.
+      CALL TRANSFORMATION id SOURCE srtti = srtti dobj = data RESULT XML result.
+
+    ELSE.
+
+      TRY.
+          CALL METHOD /vno/2ui5_cl_srt_typedescr=>('CREATE_BY_DATA_OBJECT')
+        EXPORTING
+          data_object = data
+        RECEIVING
+          srtti       = srtti.
+
+          CALL TRANSFORMATION id SOURCE srtti = srtti dobj = data RESULT XML result.
+
+        CATCH cx_root.
+
+          DATA(lv_text) = `UNSUPPORTED_FEATURE - Please install the open-source project S-RTTI by sandraros and try again: https://github.com/sandraros/S-RTTI`.
+          RAISE EXCEPTION TYPE /vno/2ui5_cx_util_error
+            EXPORTING
+              val = lv_text.
+
+      ENDTRY.
+
+    ENDIF.
 
   ENDMETHOD.
 
@@ -1289,18 +1307,6 @@ CLASS /vno/2ui5_cl_util IMPLEMENTATION.
 
   ENDMETHOD.
 
-  METHOD check_raise_srtti_installed.
-
-    IF rtti_check_class_exists( 'ZCL_SRTTI_TYPEDESCR' ) = abap_false.
-
-      DATA(lv_text) = `UNSUPPORTED_FEATURE - Please install the open-source project S-RTTI by sandraros and try again: https://github.com/sandraros/S-RTTI`.
-      RAISE EXCEPTION TYPE /vno/2ui5_cx_util_error
-        EXPORTING
-          val = lv_text.
-
-    ENDIF.
-
-  ENDMETHOD.
 
   METHOD rtti_get_t_attri_by_table_name.
 
