@@ -12,7 +12,6 @@ CLASS /vno/2ui5_cl_core_client DEFINITION
         action TYPE REF TO /vno/2ui5_cl_core_action.
 
   PROTECTED SECTION.
-
   PRIVATE SECTION.
 ENDCLASS.
 
@@ -27,7 +26,6 @@ CLASS /vno/2ui5_cl_core_client IMPLEMENTATION.
 
   METHOD /vno/2ui5_if_client~follow_up_action.
 
-*    mo_action->ms_next-s_set-s_follow_up_action-custom_js = val.
     INSERT val INTO TABLE mo_action->ms_next-s_set-s_follow_up_action-custom_js.
 
   ENDMETHOD.
@@ -40,11 +38,24 @@ CLASS /vno/2ui5_cl_core_client IMPLEMENTATION.
                       s_draft                = CORRESPONDING #( mo_action->mo_app->ms_draft )
                       check_on_navigated     = mo_action->ms_actual-check_on_navigated
                       s_config               = CORRESPONDING #( mo_action->mo_http_post->ms_request-s_front )
-                      r_event_data           = mo_action->ms_actual-r_data
-      ).
+                      r_event_data           = mo_action->ms_actual-r_data ).
+
+
+    IF mo_action->ms_next-o_app_call IS NOT INITIAL.
+      result-_s_nav-check_call = abap_true.
+    ENDIF.
+    IF mo_action->ms_next-o_app_leave IS NOT INITIAL.
+      result-_s_nav-check_leave = abap_true.
+    ENDIF.
 
     TRY.
-        DATA(lo_params) = mo_action->mo_http_post->ms_request-s_front-o_comp_data->slice( `/startupParameters/` ).
+
+        DATA(lo_comp) = mo_action->mo_http_post->ms_request-s_front-o_comp_data.
+        IF lo_comp IS NOT BOUND.
+          RETURN.
+        ENDIF.
+        DATA(lo_params) = lo_comp->slice( `/startupParameters/` ).
+
         IF lo_params IS NOT BOUND.
           RETURN.
         ENDIF.
@@ -85,7 +96,7 @@ CLASS /vno/2ui5_cl_core_client IMPLEMENTATION.
   METHOD /vno/2ui5_if_client~message_box_display.
 
     IF /vno/2ui5_cl_util=>rtti_check_clike( text ) = abap_false.
-      DATA(lt_msg) = /vno/2ui5_cl_util=>msg_get( text ).
+      DATA(lt_msg) = /vno/2ui5_cl_util=>msg_get_t( text ).
       IF lines( lt_msg ) = 1.
         DATA(lv_text) = lt_msg[ 1 ]-text.
 
@@ -95,7 +106,7 @@ CLASS /vno/2ui5_cl_core_client IMPLEMENTATION.
                                    WHEN 'E' THEN `Error`
                                    WHEN 'S' THEN `Success`
                                    WHEN `W` THEN `Warning`
-                                   ELSE          `Information` ).
+                                   ELSE `Information` ).
 
       ELSEIF lines( lt_msg ) > 1.
         lv_text = | { lines( lt_msg ) } Messages found: |.
@@ -109,7 +120,7 @@ CLASS /vno/2ui5_cl_core_client IMPLEMENTATION.
                                WHEN 'E' THEN `Error`
                                WHEN 'S' THEN `Success`
                                WHEN `W` THEN `Warning`
-                               ELSE          `Information` ).
+                               ELSE `Information` ).
         ENDIF.
         lv_type = /vno/2ui5_cl_util=>ui5_get_msg_type( lt_msg[ 1 ]-type ).
       ELSE.
@@ -144,8 +155,7 @@ CLASS /vno/2ui5_cl_core_client IMPLEMENTATION.
                                                   textdirection     = textdirection
                                                   icon              = icon
                                                   details           = lv_details
-                                                  closeonnavigation = closeonnavigation
-                                               ).
+                                                  closeonnavigation = closeonnavigation ).
 
   ENDMETHOD.
 
@@ -164,15 +174,16 @@ CLASS /vno/2ui5_cl_core_client IMPLEMENTATION.
                                                     animationtimingfunction  = animationtimingfunction
                                                     animationduration        = animationduration
                                                     closeonbrowsernavigation = closeonbrowsernavigation
-                                                    class                    = class
-                                                  ).
+                                                    class                    = class ).
 
   ENDMETHOD.
 
   METHOD /vno/2ui5_if_client~nav_app_call.
 
     IF app IS NOT BOUND.
-      /vno/2ui5_cl_util=>x_raise( `NAV_APP_LEAVE_TO_INITIAL_APP_ERROR` ).
+      RAISE EXCEPTION TYPE /vno/2ui5_cx_util_error
+        EXPORTING
+          val = `NAV_APP_LEAVE_TO_INITIAL_APP_ERROR`.
     ENDIF.
 
     mo_action->ms_next-o_app_call = app.
@@ -190,7 +201,9 @@ CLASS /vno/2ui5_cl_core_client IMPLEMENTATION.
     ENDIF.
 
     IF app IS NOT BOUND.
-      /vno/2ui5_cl_util=>x_raise( `NAV_APP_LEAVE_TO_INITIAL_APP_ERROR` ).
+      RAISE EXCEPTION TYPE /vno/2ui5_cx_util_error
+        EXPORTING
+          val = `NAV_APP_LEAVE_TO_INITIAL_APP_ERROR`.
     ENDIF.
 
     mo_action->ms_next-o_app_leave = app.
@@ -291,8 +304,18 @@ CLASS /vno/2ui5_cl_core_client IMPLEMENTATION.
 
   METHOD /vno/2ui5_if_client~view_display.
 
-    mo_action->ms_next-s_set-s_view-xml = val.
-    mo_action->ms_next-s_set-s_view-switchDefaultModelAnnoURI = switch_default_model_anno_uri.
+    IF /vno/2ui5_cl_util=>rtti_check_clike( val ).
+      mo_action->ms_next-s_set-s_view-xml = val.
+    ELSE.
+
+      DATA lo_object TYPE REF TO object.
+      lo_object ?= val.
+      CALL METHOD lo_object->('STRINGIFY')
+        RECEIVING
+          result = mo_action->ms_next-s_set-s_view-xml.
+    ENDIF.
+
+    mo_action->ms_next-s_set-s_view-switchdefaultmodelannouri = switch_default_model_anno_uri.
     mo_action->ms_next-s_set-s_view-switch_default_model_path = switch_default_model_path.
 
   ENDMETHOD.
@@ -308,12 +331,12 @@ CLASS /vno/2ui5_cl_core_client IMPLEMENTATION.
     DATA(lo_bind) = NEW /vno/2ui5_cl_core_srv_bind( mo_action->mo_app ).
     result = lo_bind->main( val    = /vno/2ui5_cl_util=>conv_get_as_data_ref( val )
                             type   = /vno/2ui5_if_core_types=>cs_bind_type-one_way
-                            config = VALUE #( path_only     = path
-                                              custom_filter = custom_filter
-                                              custom_mapper = custom_mapper
-                                              tab           = /vno/2ui5_cl_util=>conv_get_as_data_ref( tab )
-                                              tab_index     = tab_index
-                                              switch_default_model = switch_Default_Model ) ).
+                            config = VALUE #( path_only            = path
+                                              custom_filter        = custom_filter
+                                              custom_mapper        = custom_mapper
+                                              tab                  = /vno/2ui5_cl_util=>conv_get_as_data_ref( tab )
+                                              tab_index            = tab_index
+                                              switch_default_model = switch_default_model ) ).
 
 
   ENDMETHOD.
@@ -323,25 +346,14 @@ CLASS /vno/2ui5_cl_core_client IMPLEMENTATION.
     DATA(lo_bind) = NEW /vno/2ui5_cl_core_srv_bind( mo_action->mo_app ).
     result = lo_bind->main( val    = /vno/2ui5_cl_util=>conv_get_as_data_ref( val )
                             type   = /vno/2ui5_if_core_types=>cs_bind_type-two_way
-                            config = VALUE #( path_only          = path
-                                              custom_filter      = custom_filter
-                                              custom_filter_back = custom_filter_back
-                                              custom_mapper      = custom_mapper
-                                              custom_mapper_back = custom_mapper_back
-                                              tab                = /vno/2ui5_cl_util=>conv_get_as_data_ref( tab )
-                                              tab_index          = tab_index
-                                              switch_default_model = switch_Default_Model ) ).
-
-  ENDMETHOD.
-
-  METHOD /vno/2ui5_if_client~_bind_local.
-
-    DATA(lo_bind) = NEW /vno/2ui5_cl_core_srv_bind( mo_action->mo_app ).
-    result = lo_bind->main_local( val    = val
-                                  config = VALUE #( path_only     = path
-                                                    custom_mapper = custom_mapper
-                                                    custom_filter = custom_filter
-                                                    switch_default_model = switch_Default_Model ) ).
+                            config = VALUE #( path_only            = path
+                                              custom_filter        = custom_filter
+                                              custom_filter_back   = custom_filter_back
+                                              custom_mapper        = custom_mapper
+                                              custom_mapper_back   = custom_mapper_back
+                                              tab                  = /vno/2ui5_cl_util=>conv_get_as_data_ref( tab )
+                                              tab_index            = tab_index
+                                              switch_default_model = switch_default_model ) ).
 
   ENDMETHOD.
 
@@ -414,7 +426,7 @@ CLASS /vno/2ui5_cl_core_client IMPLEMENTATION.
 
   METHOD /vno/2ui5_if_client~check_on_init.
 
-    result = xsdbool( CAST /vno/2ui5_if_app(  mo_action->mo_app->mo_app )->check_initialized = abap_false ).
+    result = xsdbool( CAST /vno/2ui5_if_app( mo_action->mo_app->mo_app )->check_initialized = abap_false ).
 
   ENDMETHOD.
 

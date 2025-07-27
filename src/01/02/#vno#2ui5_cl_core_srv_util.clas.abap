@@ -19,7 +19,6 @@ CLASS /vno/2ui5_cl_core_srv_util DEFINITION
         VALUE(result)    TYPE string.
 
   PROTECTED SECTION.
-
   PRIVATE SECTION.
 ENDCLASS.
 

@@ -20,7 +20,7 @@ CLASS /vno/2ui5_cl_pop_messages DEFINITION
         message_v4 TYPE string,
         group      TYPE string,
       END OF ty_s_msg.
-    TYPES ty_t_msg TYPE STANDARD TABLE OF ty_s_msg.
+    TYPES ty_t_msg TYPE STANDARD TABLE OF ty_s_msg WITH EMPTY KEY.
 
     DATA mt_msg TYPE ty_t_msg.
 
@@ -34,7 +34,6 @@ CLASS /vno/2ui5_cl_pop_messages DEFINITION
   PROTECTED SECTION.
     DATA client            TYPE REF TO /vno/2ui5_if_client.
     DATA title             TYPE string.
-    DATA check_initialized TYPE abap_bool.
 
     METHODS view_display.
 
@@ -46,7 +45,7 @@ CLASS /vno/2ui5_cl_pop_messages IMPLEMENTATION.
   METHOD factory.
 
     r_result = NEW #( ).
-    DATA(lt_msg) = /vno/2ui5_cl_util=>msg_get( i_messages ).
+    DATA(lt_msg) = /vno/2ui5_cl_util=>msg_get_t( i_messages ).
 
     LOOP AT lt_msg REFERENCE INTO DATA(lr_row).
 
@@ -71,23 +70,18 @@ CLASS /vno/2ui5_cl_pop_messages IMPLEMENTATION.
     popup = popup->dialog( title             = `Messages`
                            contentheight     = '50%'
                            contentwidth      = '50%'
-                           verticalScrolling = abap_false
-                           afterclose        = client->_event( 'BUTTON_CONTINUE' )
-         ).
+                           verticalscrolling = abap_false
+                           afterclose        = client->_event( 'BUTTON_CONTINUE' ) ).
 
-    popup->message_view( items = client->_bind( mt_msg  )
+    popup->message_view( items = client->_bind( mt_msg )
 *                         groupitems = abap_true
         )->message_item( type     = `{TYPE}`
                          title    = `{TITLE}`
-                         subtitle = `{SUBTITLE}`
-*                         description = `{MESSAGE}`
-*                         groupname = `{GROUP}`
-            ).
+                         subtitle = `{SUBTITLE}` ).
 
-    popup->buttons(
-       )->button( text  = 'continue'
-                  press = client->_event( 'BUTTON_CONTINUE' )
-                  type  = 'Emphasized' ).
+    popup->buttons( )->button( text = 'continue'
+                  press             = client->_event( 'BUTTON_CONTINUE' )
+                  type              = 'Emphasized' ).
 
     client->popup_display( popup->stringify( ) ).
 
@@ -97,8 +91,7 @@ CLASS /vno/2ui5_cl_pop_messages IMPLEMENTATION.
 
     me->client = client.
 
-    IF check_initialized = abap_false.
-      check_initialized = abap_true.
+    IF client->check_on_init( ).
       view_display( ).
       RETURN.
     ENDIF.

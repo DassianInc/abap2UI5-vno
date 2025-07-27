@@ -22,7 +22,7 @@ CLASS /vno/2ui5_cl_pop_bal DEFINITION
         message_v4 TYPE string,
         group      TYPE string,
       END OF ty_s_msg.
-    TYPES ty_t_msg TYPE STANDARD TABLE OF ty_s_msg.
+    TYPES ty_t_msg TYPE STANDARD TABLE OF ty_s_msg WITH EMPTY KEY.
 
     DATA mt_msg TYPE ty_t_msg.
 
@@ -36,7 +36,6 @@ CLASS /vno/2ui5_cl_pop_bal DEFINITION
   PROTECTED SECTION.
     DATA client            TYPE REF TO /vno/2ui5_if_client.
     DATA title             TYPE string.
-    DATA check_initialized TYPE abap_bool.
 
     METHODS view_display.
 
@@ -54,17 +53,22 @@ CLASS /vno/2ui5_cl_pop_bal IMPLEMENTATION.
     "..
 
     "read messages..
-    DATA(lt_msg) = /vno/2ui5_cl_util=>msg_get( i_messages ).
+    DATA(lt_msg) = /vno/2ui5_cl_util=>msg_get_t( i_messages ).
     LOOP AT lt_msg REFERENCE INTO DATA(lr_row).
 
       DATA(ls_row) = VALUE ty_s_msg( ).
-      ls_row-type     = /vno/2ui5_cl_util=>ui5_get_msg_type( lr_row->type ).
-      ls_row-title    = lr_row->text.
-*      lr_row->title = `title`.
-*      lr_row->message = `message`.
-      ls_row-subtitle = |{ lr_row->id } { lr_row->no }|.
-      ls_row-date = /vno/2ui5_cl_util=>time_get_date_by_stampl( lr_row->timestampl ).
-      ls_row-time = /vno/2ui5_cl_util=>time_get_time_by_stampl( lr_row->timestampl ).
+      ls_row-type       = /vno/2ui5_cl_util=>ui5_get_msg_type( lr_row->type ).
+      ls_row-title      = lr_row->text.
+      ls_row-id         = lr_row->id.
+      ls_row-number     = lr_row->no.
+      ls_row-message_v1 = lr_row->v1.
+      ls_row-message_v2 = lr_row->v2.
+      ls_row-message_v3 = lr_row->v3.
+      ls_row-message_v4 = lr_row->v4.
+      ls_row-message    = lr_row->text.
+      ls_row-subtitle   = |{ lr_row->id } { lr_row->no }|.
+      ls_row-date       = /vno/2ui5_cl_util=>time_get_date_by_stampl( lr_row->timestampl ).
+      ls_row-time       = /vno/2ui5_cl_util=>time_get_time_by_stampl( lr_row->timestampl ).
 *      lr_row->group = `001`.
 
       INSERT ls_row INTO TABLE r_result->mt_msg.
@@ -80,7 +84,7 @@ CLASS /vno/2ui5_cl_pop_bal IMPLEMENTATION.
     popup = popup->dialog( title             = `Business Application Log`
                            contentheight     = '50%'
                            contentwidth      = '50%'
-                           verticalScrolling = abap_false
+                           verticalscrolling = abap_false
                            afterclose        = client->_event( 'BUTTON_CONTINUE' ) ).
 
     DATA(table) = popup->table( client->_bind( mt_msg ) ).
@@ -98,8 +102,7 @@ CLASS /vno/2ui5_cl_pop_bal IMPLEMENTATION.
        )->text( '{TYPE}'
        )->text( '{ID}'
        )->text( '{NUMBER}'
-       )->text( '{MESSAGE}'
-        ).
+       )->text( '{MESSAGE}' ).
 
     popup->buttons(
        )->button( text  = 'continue'
@@ -114,8 +117,7 @@ CLASS /vno/2ui5_cl_pop_bal IMPLEMENTATION.
 
     me->client = client.
 
-    IF check_initialized = abap_false.
-      check_initialized = abap_true.
+    IF client->check_on_init( ).
       view_display( ).
       RETURN.
     ENDIF.

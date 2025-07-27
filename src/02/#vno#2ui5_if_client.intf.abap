@@ -19,7 +19,9 @@ INTERFACE /vno/2ui5_if_client
       set_odata_model           TYPE string VALUE `SET_ODATA_MODEL`,
       urlhelper                 TYPE string VALUE `URLHELPER`,
       history_back              TYPE string VALUE `HISTORY_BACK`,
-      CLIPBOARD_APP_STATE       TYPE string VALUE `CLIPBOARD_APP_STATE`,
+      clipboard_app_state       TYPE string VALUE `CLIPBOARD_APP_STATE`,
+      clipboard_copy            TYPE string VALUE `CLIPBOARD_COPY`,
+      store_data                TYPE string VALUE `STORE_DATA`,
     END OF cs_event.
 
   CONSTANTS:
@@ -35,7 +37,7 @@ INTERFACE /vno/2ui5_if_client
 
   METHODS view_display
     IMPORTING
-      val                           TYPE clike
+      val                           TYPE any
       switch_default_model_anno_uri TYPE string OPTIONAL
       switch_default_model_path     TYPE string OPTIONAL.
 
@@ -51,7 +53,7 @@ INTERFACE /vno/2ui5_if_client
 
   METHODS set_push_state
     IMPORTING
-      val TYPE string optional.
+      val TYPE string OPTIONAL.
 
   METHODS set_nav_back
     IMPORTING
@@ -179,7 +181,7 @@ INTERFACE /vno/2ui5_if_client
       custom_filter        TYPE REF TO /vno/2ui5_if_ajson_filter  OPTIONAL
       !tab                 TYPE data                          OPTIONAL
       tab_index            TYPE i                             OPTIONAL
-      switch_Default_Model TYPE abap_bool DEFAULT abap_false
+      switch_default_model TYPE abap_bool DEFAULT abap_false
     RETURNING
       VALUE(result)        TYPE string.
 
@@ -187,7 +189,7 @@ INTERFACE /vno/2ui5_if_client
     IMPORTING
       val                  TYPE data
       !path                TYPE abap_bool                     DEFAULT abap_false
-      view                 TYPE string                        DEFAULT /vno/2ui5_if_client=>cs_view-main
+      view                 TYPE string                        DEFAULT cs_view-main
       custom_mapper        TYPE REF TO /vno/2ui5_if_ajson_mapping OPTIONAL
       custom_mapper_back   TYPE REF TO /vno/2ui5_if_ajson_mapping OPTIONAL
       custom_filter        TYPE REF TO /vno/2ui5_if_ajson_filter  OPTIONAL
@@ -195,16 +197,6 @@ INTERFACE /vno/2ui5_if_client
       !tab                 TYPE data                          OPTIONAL
       tab_index            TYPE i                             OPTIONAL
       switch_default_model TYPE abap_bool DEFAULT abap_false
-    RETURNING
-      VALUE(result)        TYPE string.
-
-  METHODS _bind_local
-    IMPORTING
-      val                  TYPE data
-      !path                TYPE abap_bool                     DEFAULT abap_false
-      custom_mapper        TYPE REF TO /vno/2ui5_if_ajson_mapping OPTIONAL
-      custom_filter        TYPE REF TO /vno/2ui5_if_ajson_filter  OPTIONAL
-      switch_default_Model TYPE abap_bool DEFAULT abap_false
     RETURNING
       VALUE(result)        TYPE string.
 

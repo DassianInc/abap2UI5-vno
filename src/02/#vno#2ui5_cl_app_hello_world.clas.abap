@@ -4,12 +4,9 @@ CLASS /vno/2ui5_cl_app_hello_world DEFINITION
 
   PUBLIC SECTION.
     INTERFACES /vno/2ui5_if_app.
-
-    DATA name              TYPE string.
-    DATA check_initialized TYPE abap_bool.
+    DATA name TYPE string.
 
   PROTECTED SECTION.
-
   PRIVATE SECTION.
 ENDCLASS.
 
@@ -18,8 +15,7 @@ CLASS /vno/2ui5_cl_app_hello_world IMPLEMENTATION.
 
   METHOD /vno/2ui5_if_app~main.
 
-    IF check_initialized = abap_false.
-      check_initialized = abap_true.
+    IF client->check_on_init( ).
 
       client->view_display( /vno/2ui5_cl_xml_view=>factory(
         )->shell(

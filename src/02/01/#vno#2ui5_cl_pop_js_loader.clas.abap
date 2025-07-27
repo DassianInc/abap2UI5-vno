@@ -25,7 +25,6 @@ CLASS /vno/2ui5_cl_pop_js_loader DEFINITION
     DATA ui5_gav        TYPE string.
 
   PROTECTED SECTION.
-    DATA check_initialized TYPE abap_bool.
     DATA client            TYPE REF TO /vno/2ui5_if_client.
     DATA js                TYPE string.
     DATA user_command      TYPE string.
@@ -59,12 +58,11 @@ CLASS /vno/2ui5_cl_pop_js_loader IMPLEMENTATION.
 
   METHOD view_display.
 
-    DATA(popup) = /vno/2ui5_cl_xml_view=>factory_popup( )->dialog( `Setup UI...`
-        )->content( ).
+    DATA(popup) = /vno/2ui5_cl_xml_view=>factory_popup( )->dialog( `Setup UI...` )->content( ).
 
     IF js IS NOT INITIAL.
       popup->_z2ui5( )->timer( client->_event( 'TIMER_FINISHED' )
-      )->_generic( ns   = `html`
+        )->_generic( ns = `html`
                    name = `script` )->_cc_plain_xml( js ).
     ENDIF.
 
@@ -81,8 +79,7 @@ CLASS /vno/2ui5_cl_pop_js_loader IMPLEMENTATION.
 
     me->client = client.
 
-    IF check_initialized = abap_false.
-      check_initialized = abap_true.
+    IF client->check_on_init( ).
       view_display( ).
       RETURN.
     ENDIF.
