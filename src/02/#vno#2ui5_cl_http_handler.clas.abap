@@ -29,15 +29,15 @@ CLASS /vno/2ui5_cl_http_handler DEFINITION
 
     CLASS-METHODS _http_post
       IMPORTING
-        is_req        TYPE /vno/2ui5_if_core_types=>ty_s_http_req
+        is_req        TYPE /vno/2ui5_cl_util_http=>ty_s_http_req
       RETURNING
         VALUE(result) TYPE /vno/2ui5_if_core_types=>ty_s_http_res.
 
     CLASS-METHODS _http_get
       IMPORTING
-        VALUE(is_config) TYPE  /vno/2ui5_if_types=>ty_s_http_config
+        is_config     TYPE  /vno/2ui5_if_types=>ty_s_http_config
       RETURNING
-        VALUE(result)    TYPE string.
+        VALUE(result) TYPE string.
 
     METHODS main
       IMPORTING
@@ -45,8 +45,8 @@ CLASS /vno/2ui5_cl_http_handler DEFINITION
 
     CLASS-METHODS _main
       IMPORTING
-        is_config     TYPE  /vno/2ui5_if_types=>ty_s_http_config
-        is_req        TYPE /vno/2ui5_if_core_types=>ty_s_http_req
+        is_config     TYPE /vno/2ui5_if_types=>ty_s_http_config
+        is_req        TYPE /vno/2ui5_cl_util_http=>ty_s_http_req
       RETURNING
         VALUE(result) TYPE /vno/2ui5_if_core_types=>ty_s_http_res.
 
@@ -57,7 +57,7 @@ CLASS /vno/2ui5_cl_http_handler DEFINITION
         res           TYPE REF TO object OPTIONAL
           PREFERRED PARAMETER server
       RETURNING
-        VALUE(result) TYPE /vno/2ui5_if_core_types=>ty_s_http_req.
+        VALUE(result) TYPE /vno/2ui5_cl_util_http=>ty_s_http_req.
 
     CLASS-METHODS get_response
       IMPORTING
@@ -69,13 +69,12 @@ CLASS /vno/2ui5_cl_http_handler DEFINITION
   PROTECTED SECTION.
     CLASS-DATA so_sticky_handler TYPE REF TO /vno/2ui5_cl_core_handler.
 
-    DATA mo_server TYPE REF TO /vno/2ui5_cl_abap_api_http.
+    DATA mo_server TYPE REF TO /vno/2ui5_cl_util_http.
 
-    DATA ms_req    TYPE /vno/2ui5_if_core_types=>ty_s_http_req.
+    DATA ms_req    TYPE /vno/2ui5_cl_util_http=>ty_s_http_req.
     DATA ms_res    TYPE /vno/2ui5_if_core_types=>ty_s_http_res.
     DATA ms_config TYPE /vno/2ui5_if_types=>ty_s_http_config.
 
-    METHODS set_request.
     METHODS set_response.
 
   PRIVATE SECTION.
@@ -83,13 +82,14 @@ CLASS /vno/2ui5_cl_http_handler DEFINITION
 ENDCLASS.
 
 
+
 CLASS /vno/2ui5_cl_http_handler IMPLEMENTATION.
+
 
   METHOD main.
 
     ms_config = s_config.
-
-    set_request( ).
+    ms_req = mo_server->get_req_info( ).
 
     CASE ms_req-method.
       WHEN `HEAD`.
@@ -104,12 +104,13 @@ CLASS /vno/2ui5_cl_http_handler IMPLEMENTATION.
 
   ENDMETHOD.
 
+
   METHOD factory.
 
     result = NEW #( ).
 
     IF server IS BOUND.
-      result->mo_server = /vno/2ui5_cl_abap_api_http=>factory( server ).
+      result->mo_server = /vno/2ui5_cl_util_http=>factory( server ).
     ELSEIF req IS BOUND AND res IS BOUND.
       result = factory_cloud( req = req
                               res = res ).
@@ -119,50 +120,35 @@ CLASS /vno/2ui5_cl_http_handler IMPLEMENTATION.
 
   ENDMETHOD.
 
+
   METHOD factory_cloud.
 
     result = NEW #( ).
-    result->mo_server = /vno/2ui5_cl_abap_api_http=>factory_cloud( req = req
+    result->mo_server = /vno/2ui5_cl_util_http=>factory_cloud( req     = req
                                                                res = res ).
 
   ENDMETHOD.
 
+
   METHOD _http_get.
 
-    IF is_config-title IS INITIAL.
-      is_config-title = `abap2UI5`.
-    ENDIF.
+    DATA(ls_config) = is_config.
+    /vno/2ui5_cl_exit=>get_instance( )->set_config_http_get( CHANGING cs_config = ls_config ).
 
-    IF is_config-theme IS INITIAL.
-      is_config-theme = `sap_horizon`.
-    ENDIF.
-
-    IF is_config-src IS INITIAL.
-      is_config-src = `https://sdk.openui5.org/resources/sap-ui-cachebuster/sap-ui-core.js`.
-*      ms_req_config-src     = `https://sdk.openui5.org/1.71.67/resources/sap-ui-core.js`.
-*      ms_req_config-src     = `https://sdk.openui5.org/nightly/2/resources/sap-ui-core.js`.
-    ENDIF.
-
-    IF is_config-content_security_policy IS INITIAL.
-      is_config-content_security_policy = |<meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval' data: | &&
-     |ui5.sap.com *.ui5.sap.com sapui5.hana.ondemand.com *.sapui5.hana.ondemand.com openui5.hana.ondemand.com *.openui5.hana.ondemand.com | &&
-     |sdk.openui5.org *.sdk.openui5.org cdn.jsdelivr.net *.cdn.jsdelivr.net cdnjs.cloudflare.com *.cdnjs.cloudflare.com schemas *.schemas; worker-src 'self' blob:; "/>|.
-    ENDIF.
-
-    IF is_config-styles_css IS INITIAL.
+    IF ls_config-styles_css IS INITIAL.
       DATA(lv_style_css) = /vno/2ui5_cl_app_style_css=>get( ).
     ELSE.
-      lv_style_css = is_config-styles_css.
+      lv_style_css = ls_config-styles_css.
     ENDIF.
 
     result = |<!DOCTYPE html>| && |\n| &&
                |<html lang="en">| && |\n| &&
                |<head>| && |\n| &&
-                  |{ is_config-content_security_policy }\n| &&
+                  |{ ls_config-content_security_policy }\n| &&
                |    <meta charset="UTF-8">| && |\n| &&
                |    <meta name="viewport" content="width=device-width, initial-scale=1.0">| && |\n| &&
                |    <meta http-equiv="X-UA-Compatible" content="IE=edge">| && |\n| &&
-                | <title> { is_config-title }</title> \n| &&
+                | <title> { ls_config-title }</title> \n| &&
                 | <style>        html, body, body > div, #container, #container-uiarea \{\n| &
                 |            height: 100%;\n| &
                 |        \}</style> \n| &&
@@ -171,8 +157,8 @@ CLASS /vno/2ui5_cl_http_handler IMPLEMENTATION.
              |    sap.ui.require.preload(\{| && |\n| &&
              |      "z2ui5/css/style.css": '{ lv_style_css }',| && |\n| &&
              |      "z2ui5/manifest.json": '{ /vno/2ui5_cl_app_manifest_json=>get( ) }',| && |\n| &&
-             |      "z2ui5/Component.js": function()\{{ /vno/2ui5_cl_app_component_js=>get( ) }{ is_config-custom_js }\},| && |\n| &&
-             |      "z2ui5/model/models.js": function()\{{  /vno/2ui5_cl_app_models_js=>get( ) }\},| && |\n| &&
+             |      "z2ui5/Component.js": function()\{{ /vno/2ui5_cl_app_component_js=>get( ) }{ ls_config-custom_js }\},| && |\n| &&
+             |      "z2ui5/model/models.js": function()\{{ /vno/2ui5_cl_app_models_js=>get( ) }\},| && |\n| &&
              |      "z2ui5/view/App.view.xml": '{ /vno/2ui5_cl_app_app_xml=>get( ) }',| && |\n| &&
              |      "z2ui5/controller/App.controller.js": function()\{{ /vno/2ui5_cl_app_app_js=>get( ) }\},| && |\n| &&
              |      "z2ui5/view/View1.view.xml": '{ /vno/2ui5_cl_app_view1_xml=>get( ) }',| && |\n| &&
@@ -188,9 +174,9 @@ CLASS /vno/2ui5_cl_http_handler IMPLEMENTATION.
              |</script>| && |\n| &&
                 |<script id="sap-ui-bootstrap" data-sap-ui-resourceroots='\{ "z2ui5": "./" \}' data-sap-ui-oninit="onInitComponent" | && |\n| &&
                  |data-sap-ui-compatVersion="edge" data-sap-ui-async="true" data-sap-ui-frameOptions="trusted" data-sap-ui-bindingSyntax="complex"| && |\n| &&
-                 |data-sap-ui-theme="{ is_config-theme  }" src=" { is_config-src }"   |.
+                 |data-sap-ui-theme="{ ls_config-theme  }" src=" { ls_config-src }"   |.
 
-    LOOP AT is_config-t_add_config REFERENCE INTO DATA(lr_config).
+    LOOP AT ls_config-t_add_config REFERENCE INTO DATA(lr_config).
       result = |{ result } { lr_config->n }='{ lr_config->v }'|.
     ENDLOOP.
 
@@ -202,23 +188,17 @@ CLASS /vno/2ui5_cl_http_handler IMPLEMENTATION.
 
   ENDMETHOD.
 
+
   METHOD run.
 
     DATA(lo_handler) = factory( server = server
                                 req    = req
-                                res    = res
-         ).
+                                res    = res ).
 
     lo_handler->main( config ).
 
   ENDMETHOD.
 
-  METHOD set_request.
-
-    ms_req-body   = mo_server->get_cdata( ).
-    ms_req-method = mo_server->get_method( ).
-
-  ENDMETHOD.
 
   METHOD set_response.
 
@@ -230,7 +210,7 @@ CLASS /vno/2ui5_cl_http_handler IMPLEMENTATION.
 
     " transform cookie to header based contextid handling
     IF ms_res-s_stateful-switched = abap_true.
-      mo_server->set_session_stateful( ms_res-s_stateful-active  ).
+      mo_server->set_session_stateful( ms_res-s_stateful-active ).
       IF mo_server->get_header_field( 'sap-contextid-accept' ) = 'header'.
         DATA(lv_contextid) = mo_server->get_response_cookie( 'sap-contextid' ).
         IF lv_contextid IS NOT INITIAL.
@@ -248,6 +228,7 @@ CLASS /vno/2ui5_cl_http_handler IMPLEMENTATION.
     ENDIF.
 
   ENDMETHOD.
+
 
   METHOD _http_post.
 
@@ -274,7 +255,11 @@ CLASS /vno/2ui5_cl_http_handler IMPLEMENTATION.
 
   ENDMETHOD.
 
+
   METHOD _main.
+
+    /vno/2ui5_cl_exit=>init_context( is_req ).
+
 
     CASE is_req-method.
       WHEN `GET`.
@@ -285,24 +270,24 @@ CLASS /vno/2ui5_cl_http_handler IMPLEMENTATION.
 
   ENDMETHOD.
 
+
   METHOD get_request.
 
     DATA(lo_handler) = factory( server = server
                                 req    = req
-                                res    = res
-     ).
+                                res    = res ).
 
     result-body   = lo_handler->mo_server->get_cdata( ).
     result-method = lo_handler->mo_server->get_method( ).
 
   ENDMETHOD.
 
+
   METHOD get_response.
 
     DATA(lo_handler) = factory( server = server
                                 req    = req
-                                res    = res
-     ).
+                                res    = res ).
 
     lo_handler->mo_server->set_cdata( is_res-body ).
     lo_handler->mo_server->set_header_field( n = `cache-control`
@@ -312,7 +297,7 @@ CLASS /vno/2ui5_cl_http_handler IMPLEMENTATION.
 
     " transform cookie to header based contextid handling
     IF is_res-s_stateful-switched = abap_true.
-      lo_handler->mo_server->set_session_stateful( is_res-s_stateful-active  ).
+      lo_handler->mo_server->set_session_stateful( is_res-s_stateful-active ).
       IF lo_handler->mo_server->get_header_field( 'sap-contextid-accept' ) = 'header'.
         DATA(lv_contextid) = lo_handler->mo_server->get_response_cookie( 'sap-contextid' ).
         IF lv_contextid IS NOT INITIAL.
@@ -330,5 +315,4 @@ CLASS /vno/2ui5_cl_http_handler IMPLEMENTATION.
     ENDIF.
 
   ENDMETHOD.
-
 ENDCLASS.

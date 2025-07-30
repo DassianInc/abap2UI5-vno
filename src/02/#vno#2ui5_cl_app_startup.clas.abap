@@ -18,9 +18,7 @@ CLASS /vno/2ui5_cl_app_startup DEFINITION
       END OF ms_home.
 
     DATA mv_ui5_version       TYPE string.
-
     DATA client               TYPE REF TO /vno/2ui5_if_client.
-    DATA mv_check_initialized TYPE abap_bool.
 
     CLASS-METHODS factory
       RETURNING
@@ -48,10 +46,9 @@ CLASS /vno/2ui5_cl_app_startup IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD on_event_check.
-    " TODO: variable is assigned but never used (ABAP cleaner)
-    DATA li_app_test TYPE REF TO /vno/2ui5_if_app.
 
     TRY.
+        DATA li_app_test TYPE REF TO /vno/2ui5_if_app.
         ms_home-classname = /vno/2ui5_cl_util=>c_trim_upper( ms_home-classname ).
         CREATE OBJECT li_app_test TYPE (ms_home-classname).
 
@@ -80,14 +77,19 @@ CLASS /vno/2ui5_cl_app_startup IMPLEMENTATION.
                      title         = `abap2UI5 - Developing UI5 Apps Purely in ABAP`
                      shownavbutton = abap_false ).
 
-    page->header_content(
-      )->toolbar_spacer(
-      )->button( text  = `Debugging Tools`
-                 icon  = `sap-icon://enablement`
-                 press = client->_event( `OPEN_DEBUG` )
-      )->button( text  = `System`
-                 icon  = `sap-icon://information`
-                 press = client->_event( `OPEN_INFO` ) ).
+    DATA(toolbar) = page->header_content( ).
+    toolbar->toolbar_spacer(
+      )->button( text = `Debugging Tools`
+               icon   = `sap-icon://enablement`
+               press  = client->_event( `OPEN_DEBUG` )
+      )->button( text = `System`
+               icon   = `sap-icon://information`
+               press  = client->_event( `OPEN_INFO` ) ).
+    IF /vno/2ui5_cl_util=>rtti_check_class_exists( 'z2ui5_cl_app_icf_config' ).
+      toolbar->button( text = 'Config'
+                  icon      = 'sap-icon://settings'
+                  press     = client->_event( 'SET_CONFIG' ) ).
+    ENDIF.
 
     DATA(simple_form) = page->simple_form( editable                = abap_true
                                            layout                  = `ResponsiveGridLayout`
@@ -176,7 +178,7 @@ CLASS /vno/2ui5_cl_app_startup IMPLEMENTATION.
                        href   = `https://github.com/abap2UI5/abap2UI5/pulls` ).
 
 
-    simple_form->toolbar( )->title( `More` ).
+    simple_form->toolbar( )->title( `Documentation` ).
     simple_form->label( ).
     simple_form->link( text   = `www.abap2UI5.org`
                        target = `_blank`
@@ -190,8 +192,7 @@ CLASS /vno/2ui5_cl_app_startup IMPLEMENTATION.
 
     me->client = client.
 
-    IF mv_check_initialized = abap_false.
-      mv_check_initialized = abap_true.
+    IF client->check_on_init( ).
       z2ui5_on_init( ).
       view_display_start( ).
       RETURN.
@@ -199,7 +200,7 @@ CLASS /vno/2ui5_cl_app_startup IMPLEMENTATION.
 
     IF client->get( )-check_on_navigated = abap_true.
       TRY.
-          DATA(lo_f4) = CAST /vno/2ui5_cl_pop_to_select( client->get_app( client->get( )-s_draft-id_prev_app ) ).
+          DATA(lo_f4) = CAST /vno/2ui5_cl_pop_to_select( client->get_app_prev( ) ).
           DATA(ls_result) = lo_f4->result( ).
           IF ls_result-check_confirmed = abap_true.
 
@@ -256,6 +257,9 @@ CLASS /vno/2ui5_cl_app_startup IMPLEMENTATION.
     simple_form2->checkbox( enabled  = abap_false
                             selected = /vno/2ui5_cl_util=>context_check_abap_cloud( ) ).
 
+    simple_form2->label( `Userexit` ).
+    simple_form2->text( /vno/2ui5_cl_exit=>get_user_exit_class( ) ).
+
     DATA(lv_count) = CONV string( NEW /vno/2ui5_cl_core_srv_draft( )->count_entries( ) ).
     simple_form2->toolbar( )->title( `abap2UI5` ).
     simple_form2->label( `Version ` ).
@@ -277,6 +281,11 @@ CLASS /vno/2ui5_cl_app_startup IMPLEMENTATION.
 
     CASE client->get( )-event.
 
+      WHEN `SET_CONFIG`.
+        DATA lo_app TYPE REF TO /vno/2ui5_if_app.
+        CREATE OBJECT lo_app TYPE ('Z2UI5_CL_APP_ICF_CONFIG').
+        client->nav_app_call( lo_app ).
+
       WHEN `CLOSE`.
         client->popup_destroy( ).
 
@@ -284,7 +293,6 @@ CLASS /vno/2ui5_cl_app_startup IMPLEMENTATION.
         client->message_box_display( `Press CTRL+F12 to open the debugging tools` ).
       WHEN `OPEN_INFO`.
         view_display_popup( ).
-*        client->nav_app_call( z2ui5_cl_core_app_info=>factory( ) ).
         RETURN.
 
       WHEN `BUTTON_CHECK`.

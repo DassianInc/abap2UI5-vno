@@ -37,7 +37,6 @@ CLASS /vno/2ui5_cl_pop_to_select DEFINITION
         VALUE(result) TYPE ty_s_result.
 
   PROTECTED SECTION.
-    DATA check_initialized TYPE abap_bool.
     DATA check_table_line  TYPE abap_bool.
     DATA client            TYPE REF TO /vno/2ui5_if_client.
     DATA title             TYPE string.
@@ -148,8 +147,7 @@ CLASS /vno/2ui5_cl_pop_to_select IMPLEMENTATION.
 
     me->client = client.
 
-    IF check_initialized = abap_false.
-      check_initialized = abap_true.
+    IF client->check_on_init( ).
       set_output_table( ).
       display( ).
       RETURN.
@@ -232,7 +230,8 @@ CLASS /vno/2ui5_cl_pop_to_select IMPLEMENTATION.
         ASSERT sy-subrc = 0.
         <field> = <row>.
       ELSE.
-        <row2> = CORRESPONDING #( <row> ).
+        CLEAR <row2>.
+        MOVE-CORRESPONDING <row> TO <row2>.
       ENDIF.
       INSERT <row2> INTO TABLE <tab_out>.
 
@@ -268,7 +267,8 @@ CLASS /vno/2ui5_cl_pop_to_select IMPLEMENTATION.
         ASSERT sy-subrc = 0.
         <row_result> = <table_line_selected>.
       ELSE.
-        <row_result> = CORRESPONDING #( <row_selected> ).
+        CLEAR <row_result>.
+        MOVE-CORRESPONDING <row_selected> TO <row_result>.
       ENDIF.
 
       INSERT <row_result> INTO TABLE <table_result>.

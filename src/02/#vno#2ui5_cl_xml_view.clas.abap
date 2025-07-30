@@ -172,6 +172,14 @@ CLASS /vno/2ui5_cl_xml_view DEFINITION
       RETURNING
         VALUE(result)  TYPE REF TO /vno/2ui5_cl_xml_view.
 
+    METHODS overflow_toolbar_layout_data
+      IMPORTING
+        priority                   TYPE clike OPTIONAL
+        group                      TYPE clike OPTIONAL
+        closeoverflowoninteraction TYPE clike OPTIONAL
+      RETURNING
+        VALUE(result)              TYPE REF TO /vno/2ui5_cl_xml_view.
+
     METHODS table
       IMPORTING
         id                  TYPE clike OPTIONAL
@@ -219,11 +227,11 @@ CLASS /vno/2ui5_cl_xml_view DEFINITION
       IMPORTING
         ns                  TYPE clike OPTIONAL
         link                TYPE clike OPTIONAL
-        ID                  type CLIKE optional
-        CLASS               type CLIKE optional
-        CURRENTLOCATIONTEXT type CLIKE optional
-        SEPARATORSTYLE      type CLIKE optional
-        VISIBLE             type CLIKE optional
+        id                  TYPE clike OPTIONAL
+        class               TYPE clike OPTIONAL
+        currentlocationtext TYPE clike OPTIONAL
+        separatorstyle      TYPE clike OPTIONAL
+        visible             TYPE clike OPTIONAL
       RETURNING
         VALUE(result)       TYPE REF TO /vno/2ui5_cl_xml_view.
 
@@ -507,6 +515,7 @@ CLASS /vno/2ui5_cl_xml_view DEFINITION
     METHODS avatar
       IMPORTING
         ns                TYPE clike OPTIONAL
+        !id               TYPE clike OPTIONAL
         src               TYPE clike OPTIONAL
         class             TYPE clike OPTIONAL
         displaysize       TYPE clike OPTIONAL
@@ -530,15 +539,15 @@ CLASS /vno/2ui5_cl_xml_view DEFINITION
 
     METHODS avatar_group
       IMPORTING !id                     TYPE clike     OPTIONAL
-                avatarCustomDisplaySize TYPE clike     OPTIONAL
-                avatarCustomFontSize    TYPE clike     OPTIONAL
-                avatarDisplaySize       TYPE clike     OPTIONAL
+                avatarcustomdisplaysize TYPE clike     OPTIONAL
+                avatarcustomfontsize    TYPE clike     OPTIONAL
+                avatardisplaysize       TYPE clike     OPTIONAL
                 !blocked                TYPE abap_bool OPTIONAL
                 busy                    TYPE abap_bool OPTIONAL
-                busyIndicatorDelay      TYPE clike     OPTIONAL
-                busyIndicatorSize       TYPE clike     OPTIONAL
-                fieldGroupIds           TYPE clike     OPTIONAL
-                groupType               TYPE clike     OPTIONAL
+                busyindicatordelay      TYPE clike     OPTIONAL
+                busyindicatorsize       TYPE clike     OPTIONAL
+                fieldgroupids           TYPE clike     OPTIONAL
+                grouptype               TYPE clike     OPTIONAL
                 !visible                TYPE abap_bool DEFAULT abap_true
                 tooltip                 TYPE clike     OPTIONAL
                 items                   TYPE clike     OPTIONAL
@@ -548,10 +557,10 @@ CLASS /vno/2ui5_cl_xml_view DEFINITION
     METHODS avatar_group_item
       IMPORTING !id                TYPE clike OPTIONAL
                 busy               TYPE clike DEFAULT `false`
-                busyIndicatorDelay TYPE clike OPTIONAL
-                busyIndicatorSize  TYPE clike OPTIONAL
-                fallbackIcon       TYPE clike OPTIONAL
-                fieldGroupIds      TYPE clike OPTIONAL
+                busyindicatordelay TYPE clike OPTIONAL
+                busyindicatorsize  TYPE clike OPTIONAL
+                fallbackicon       TYPE clike OPTIONAL
+                fieldgroupids      TYPE clike OPTIONAL
                 initials           TYPE clike OPTIONAL
                 src                TYPE clike OPTIONAL
                 !visible           TYPE clike DEFAULT `true`
@@ -701,6 +710,7 @@ CLASS /vno/2ui5_cl_xml_view DEFINITION
       IMPORTING
         showclearicon    TYPE clike OPTIONAL
         showvaluehelp    TYPE clike OPTIONAL
+        valuehelponly    TYPE clike OPTIONAL
         name             TYPE clike OPTIONAL
         suggestionitems  TYPE clike OPTIONAL
         tokenupdate      TYPE clike OPTIONAL
@@ -1160,11 +1170,11 @@ CLASS /vno/2ui5_cl_xml_view DEFINITION
                 scanfail                  TYPE clike OPTIONAL
                 inputliveupdate           TYPE clike OPTIONAL
                 dialogtitle               TYPE clike OPTIONAL
-                disableBarcodeInputDialog TYPE clike OPTIONAL
-                frameRate                 TYPE clike OPTIONAL
-                keepCameraScan            TYPE clike OPTIONAL
-                preferFrontCamera         TYPE clike OPTIONAL
-                provideFallback           TYPE clike OPTIONAL
+                disablebarcodeinputdialog TYPE clike OPTIONAL
+                framerate                 TYPE clike OPTIONAL
+                keepcamerascan            TYPE clike OPTIONAL
+                preferfrontcamera         TYPE clike OPTIONAL
+                providefallback           TYPE clike OPTIONAL
                 !width                    TYPE clike OPTIONAL
                 zoom                      TYPE clike OPTIONAL
       RETURNING VALUE(result)             TYPE REF TO /vno/2ui5_cl_xml_view.
@@ -1621,6 +1631,7 @@ CLASS /vno/2ui5_cl_xml_view DEFINITION
         select                 TYPE clike OPTIONAL
         delete                 TYPE clike OPTIONAL
         class                  TYPE clike OPTIONAL
+          PREFERRED PARAMETER items
       RETURNING
         VALUE(result)          TYPE REF TO /vno/2ui5_cl_xml_view.
 
@@ -1751,8 +1762,8 @@ CLASS /vno/2ui5_cl_xml_view DEFINITION
 
     METHODS grid_box_layout
       IMPORTING boxesperrowconfig TYPE clike OPTIONAL
-                boxMinWidth       TYPE clike OPTIONAL
-                boxWidth          TYPE clike OPTIONAL
+                boxminwidth       TYPE clike OPTIONAL
+                boxwidth          TYPE clike OPTIONAL
       RETURNING VALUE(result)     TYPE REF TO /vno/2ui5_cl_xml_view.
 
     METHODS grid_data
@@ -1766,42 +1777,42 @@ CLASS /vno/2ui5_cl_xml_view DEFINITION
         VALUE(result) TYPE REF TO /vno/2ui5_cl_xml_view.
 
     METHODS grid_drop_info
-      IMPORTING targetAggregation TYPE clike OPTIONAL
-                dropPosition      TYPE clike OPTIONAL
-                dropLayout        TYPE clike OPTIONAL
+      IMPORTING targetaggregation TYPE clike OPTIONAL
+                dropposition      TYPE clike OPTIONAL
+                droplayout        TYPE clike OPTIONAL
                 drop              TYPE clike OPTIONAL
-                dragEnter         TYPE clike OPTIONAL
-                dragOver          TYPE clike OPTIONAL
+                dragenter         TYPE clike OPTIONAL
+                dragover          TYPE clike OPTIONAL
       RETURNING VALUE(result)     TYPE REF TO /vno/2ui5_cl_xml_view.
 
     METHODS grid_list
       IMPORTING !id                    TYPE clike     OPTIONAL
                 busy                   TYPE abap_bool OPTIONAL
-                busyIndicatorDelay     TYPE clike     OPTIONAL
-                busyIndicatorSize      TYPE clike     OPTIONAL
-                enableBusyIndicator    TYPE abap_bool OPTIONAL
-                fieldGroupIds          TYPE clike     OPTIONAL
-                footerText             TYPE clike     OPTIONAL
+                busyindicatordelay     TYPE clike     OPTIONAL
+                busyindicatorsize      TYPE clike     OPTIONAL
+                enablebusyindicator    TYPE abap_bool OPTIONAL
+                fieldgroupids          TYPE clike     OPTIONAL
+                footertext             TYPE clike     OPTIONAL
                 growing                TYPE abap_bool OPTIONAL
-                growingDirection       TYPE clike     OPTIONAL
-                growingScrollToLoad    TYPE abap_bool OPTIONAL
-                growingThreshold       TYPE clike     OPTIONAL
-                growingTriggerText     TYPE clike     OPTIONAL
-                headerLevel            TYPE clike     OPTIONAL
-                headerText             TYPE clike     OPTIONAL
-                includeItemInSelection TYPE abap_bool OPTIONAL
+                growingdirection       TYPE clike     OPTIONAL
+                growingscrolltoload    TYPE abap_bool OPTIONAL
+                growingthreshold       TYPE clike     OPTIONAL
+                growingtriggertext     TYPE clike     OPTIONAL
+                headerlevel            TYPE clike     OPTIONAL
+                headertext             TYPE clike     OPTIONAL
+                includeiteminselection TYPE abap_bool OPTIONAL
                 inset                  TYPE abap_bool OPTIONAL
-                keyboardMode           TYPE clike     OPTIONAL
+                keyboardmode           TYPE clike     OPTIONAL
                 !mode                  TYPE clike     OPTIONAL
-                modeAnimationOn        TYPE abap_bool OPTIONAL
-                multiSelectMode        TYPE clike     OPTIONAL
-                noDataText             TYPE clike     OPTIONAL
-                rememberSelections     TYPE abap_bool OPTIONAL
-                showNoData             TYPE abap_bool OPTIONAL
-                showSeparators         TYPE clike     OPTIONAL
-                showUnread             TYPE abap_bool OPTIONAL
+                modeanimationon        TYPE abap_bool OPTIONAL
+                multiselectmode        TYPE clike     OPTIONAL
+                nodatatext             TYPE clike     OPTIONAL
+                rememberselections     TYPE abap_bool OPTIONAL
+                shownodata             TYPE abap_bool OPTIONAL
+                showseparators         TYPE clike     OPTIONAL
+                showunread             TYPE abap_bool OPTIONAL
                 sticky                 TYPE clike     OPTIONAL
-                swipeDirection         TYPE clike     OPTIONAL
+                swipedirection         TYPE clike     OPTIONAL
                 !visible               TYPE abap_bool DEFAULT abap_true
                 !width                 TYPE clike     OPTIONAL
                 items                  TYPE clike     OPTIONAL
@@ -1809,19 +1820,19 @@ CLASS /vno/2ui5_cl_xml_view DEFINITION
 
     METHODS grid_list_item
       IMPORTING busy               TYPE clike OPTIONAL
-                busyIndicatorDelay TYPE clike OPTIONAL
-                busyIndicatorSize  TYPE clike OPTIONAL
+                busyindicatordelay TYPE clike OPTIONAL
+                busyindicatorsize  TYPE clike OPTIONAL
                 counter            TYPE clike OPTIONAL
-                fieldGroupIds      TYPE clike OPTIONAL
+                fieldgroupids      TYPE clike OPTIONAL
                 highlight          TYPE clike OPTIONAL
-                highlightText      TYPE clike OPTIONAL
+                highlighttext      TYPE clike OPTIONAL
                 navigated          TYPE clike OPTIONAL
                 selected           TYPE clike OPTIONAL
                 !type              TYPE clike OPTIONAL
                 unread             TYPE clike OPTIONAL
                 !visible           TYPE clike DEFAULT `true`
-                detailPress        TYPE clike OPTIONAL
-                detailTap          TYPE clike OPTIONAL
+                detailpress        TYPE clike OPTIONAL
+                detailtap          TYPE clike OPTIONAL
                 press              TYPE clike OPTIONAL
                 tap                TYPE clike OPTIONAL
       RETURNING VALUE(result)      TYPE REF TO /vno/2ui5_cl_xml_view.
@@ -1931,7 +1942,7 @@ CLASS /vno/2ui5_cl_xml_view DEFINITION
         id            TYPE clike OPTIONAL
         color         TYPE clike OPTIONAL
         fraction      TYPE clike OPTIONAL
-        fractionScale TYPE clike OPTIONAL
+        fractionscale TYPE clike OPTIONAL
         class         TYPE clike OPTIONAL
       RETURNING
         VALUE(result) TYPE REF TO /vno/2ui5_cl_xml_view.
@@ -2137,6 +2148,10 @@ CLASS /vno/2ui5_cl_xml_view DEFINITION
       RETURNING
         VALUE(result) TYPE REF TO /vno/2ui5_cl_xml_view.
 
+    METHODS tree_extension
+      RETURNING
+        VALUE(result) TYPE REF TO /vno/2ui5_cl_xml_view.
+
     METHODS filter_bar
       IMPORTING
         usetoolbar                   TYPE clike DEFAULT 'false'
@@ -2280,7 +2295,7 @@ CLASS /vno/2ui5_cl_xml_view DEFINITION
         width                 TYPE clike OPTIONAL
         showsortmenuentry     TYPE clike OPTIONAL
         sortproperty          TYPE clike OPTIONAL
-        autoResizable         TYPE clike OPTIONAL
+        autoresizable         TYPE clike OPTIONAL
         filterproperty        TYPE clike OPTIONAL
         showfiltermenuentry   TYPE clike OPTIONAL
         defaultfilteroperator TYPE clike OPTIONAL
@@ -3596,7 +3611,7 @@ CLASS /vno/2ui5_cl_xml_view DEFINITION
       RETURNING
         VALUE(result) TYPE REF TO /vno/2ui5_cl_xml_view.
 
-    METHODS comparison_micro_chart_Data
+    METHODS comparison_micro_chart_data
       IMPORTING !color        TYPE clike OPTIONAL
                 press         TYPE clike OPTIONAL
                 displayvalue  TYPE clike OPTIONAL
@@ -3735,7 +3750,7 @@ CLASS /vno/2ui5_cl_xml_view DEFINITION
         inputsastooltips    TYPE clike OPTIONAL
         showadvancedtooltip TYPE clike OPTIONAL
         showhandletooltip   TYPE clike OPTIONAL
-        liveChange          TYPE clike OPTIONAL
+        livechange          TYPE clike OPTIONAL
       RETURNING
         VALUE(result)       TYPE REF TO /vno/2ui5_cl_xml_view.
 
@@ -3967,23 +3982,23 @@ CLASS /vno/2ui5_cl_xml_view DEFINITION
       IMPORTING
         id                     TYPE clike OPTIONAL
         showexecuteonselection TYPE clike OPTIONAL
-        persistencyKey         TYPE clike OPTIONAL
+        persistencykey         TYPE clike OPTIONAL
       RETURNING
         VALUE(result)          TYPE REF TO /vno/2ui5_cl_xml_view.
 
     METHODS smart_filter_bar
       IMPORTING
         id             TYPE clike OPTIONAL
-        persistencyKey TYPE clike OPTIONAL
-        entitySet      TYPE clike OPTIONAL
+        persistencykey TYPE clike OPTIONAL
+        entityset      TYPE clike OPTIONAL
       RETURNING
         VALUE(result)  TYPE REF TO /vno/2ui5_cl_xml_view.
 
     METHODS control_configuration
       IMPORTING
         id                            TYPE clike OPTIONAL
-        prevInitDataFetchInValHelpDia TYPE clike OPTIONAL
-        visibleInAdvancedArea         TYPE clike OPTIONAL
+        previnitdatafetchinvalhelpdia TYPE clike OPTIONAL
+        visibleinadvancedarea         TYPE clike OPTIONAL
         key                           TYPE clike OPTIONAL
       RETURNING
         VALUE(result)                 TYPE REF TO /vno/2ui5_cl_xml_view.
@@ -3995,18 +4010,18 @@ CLASS /vno/2ui5_cl_xml_view DEFINITION
     METHODS smart_table
       IMPORTING
         id                      TYPE clike OPTIONAL
-        smartFilterId           TYPE clike OPTIONAL
-        tableType               TYPE clike OPTIONAL
+        smartfilterid           TYPE clike OPTIONAL
+        tabletype               TYPE clike OPTIONAL
         editable                TYPE clike OPTIONAL
-        initiallyVisibleFields  TYPE clike OPTIONAL
-        entitySet               TYPE clike OPTIONAL
-        useVariantManagement    TYPE clike OPTIONAL
-        useExportToExcel        TYPE clike OPTIONAL
-        useTablePersonalisation TYPE clike OPTIONAL
+        initiallyvisiblefields  TYPE clike OPTIONAL
+        entityset               TYPE clike OPTIONAL
+        usevariantmanagement    TYPE clike OPTIONAL
+        useexporttoexcel        TYPE clike OPTIONAL
+        usetablepersonalisation TYPE clike OPTIONAL
         header                  TYPE clike OPTIONAL
-        showRowCount            TYPE clike OPTIONAL
-        enableExport            TYPE clike OPTIONAL
-        enableAutoBinding       TYPE clike OPTIONAL
+        showrowcount            TYPE clike OPTIONAL
+        enableexport            TYPE clike OPTIONAL
+        enableautobinding       TYPE clike OPTIONAL
       RETURNING
         VALUE(result)           TYPE REF TO /vno/2ui5_cl_xml_view.
 
@@ -4130,7 +4145,7 @@ CLASS /vno/2ui5_cl_xml_view DEFINITION
       IMPORTING
         id               TYPE clike OPTIONAL
         autoadjustheight TYPE clike OPTIONAL
-        showHome         TYPE clike OPTIONAL
+        showhome         TYPE clike OPTIONAL
       RETURNING
         VALUE(result)    TYPE REF TO /vno/2ui5_cl_xml_view.
 
@@ -4153,7 +4168,7 @@ CLASS /vno/2ui5_cl_xml_view DEFINITION
       IMPORTING !id             TYPE clike OPTIONAL
                 initialposition TYPE clike OPTIONAL
                 height          TYPE clike OPTIONAL
-                lassoSelection  TYPE clike OPTIONAL
+                lassoselection  TYPE clike OPTIONAL
                 visible         TYPE clike OPTIONAL
                 width           TYPE clike OPTIONAL
                 initialzoom     TYPE clike OPTIONAL
@@ -4488,14 +4503,14 @@ CLASS /vno/2ui5_cl_xml_view DEFINITION
         VALUE(result)  TYPE REF TO /vno/2ui5_cl_xml_view.
 
     METHODS drag_info
-      IMPORTING sourceAggregation TYPE clike OPTIONAL
+      IMPORTING sourceaggregation TYPE clike OPTIONAL
       RETURNING VALUE(result)     TYPE REF TO /vno/2ui5_cl_xml_view.
 
-    METHODS Drag_Drop_Info
+    METHODS drag_drop_info
       IMPORTING
-        sourceAggregation TYPE clike OPTIONAL
-        targetAggregation TYPE clike OPTIONAL
-        dragStart         TYPE clike OPTIONAL
+        sourceaggregation TYPE clike OPTIONAL
+        targetaggregation TYPE clike OPTIONAL
+        dragstart         TYPE clike OPTIONAL
         drop              TYPE clike OPTIONAL
       RETURNING
         VALUE(result)     TYPE REF TO /vno/2ui5_cl_xml_view.
@@ -5258,7 +5273,7 @@ CLASS /vno/2ui5_cl_xml_view DEFINITION
     METHODS smart_multi_input
       IMPORTING
         id                   TYPE clike OPTIONAL
-        entitySet            TYPE clike OPTIONAL
+        entityset            TYPE clike OPTIONAL
         value                TYPE clike OPTIONAL
         supportranges        TYPE clike DEFAULT 'false'
         enableodataselect    TYPE clike DEFAULT 'false'
@@ -5273,6 +5288,15 @@ CLASS /vno/2ui5_cl_xml_view DEFINITION
         maxlength            TYPE clike DEFAULT '0'
       RETURNING
         VALUE(result)        TYPE REF TO /vno/2ui5_cl_xml_view.
+
+    METHODS row_settings
+      IMPORTING
+        highlight     TYPE clike OPTIONAL
+        highlighttext TYPE clike OPTIONAL
+        navigated     TYPE clike OPTIONAL
+      RETURNING
+        VALUE(result) TYPE REF TO /vno/2ui5_cl_xml_view.
+
   PROTECTED SECTION.
     DATA mv_name     TYPE string.
     DATA mv_ns       TYPE string.
@@ -5343,7 +5367,7 @@ CLASS /vno/2ui5_cl_xml_view IMPLEMENTATION.
                        ns     = `vbm`
                        t_prop = VALUE #( ( n = `id`  v = id )
                                          ( n = `initialPosition`  v = initialposition )
-                                         ( n = `lassoSelection`  v = lassoSelection )
+                                         ( n = `lassoSelection`  v = lassoselection )
                                          ( n = `height`  v = height )
                                          ( n = `visible`  v = visible )
                                          ( n = `width`  v = width )
@@ -5387,7 +5411,8 @@ CLASS /vno/2ui5_cl_xml_view IMPLEMENTATION.
     result = me.
     _generic( name   = `Avatar`
               ns     = ns
-              t_prop = VALUE #( ( n = `src`         v = src )
+              t_prop = VALUE #( ( n = `id` v = id )
+                                ( n = `src`         v = src )
                                 ( n = `class`       v = class )
                                 ( n = `ariaHasPopup`       v = ariahaspopup )
                                 ( n = `backgroundColor`       v = backgroundcolor )
@@ -5411,35 +5436,35 @@ CLASS /vno/2ui5_cl_xml_view IMPLEMENTATION.
     result = _generic( name   = `AvatarGroup`
                        ns     = `f`
                        t_prop = VALUE #( ( n = `id` v = id )
-                                         ( n = `avatarCustomDisplaySize` v = avatarCustomDisplaySize )
-                                         ( n = `avatarCustomDispavatarCustomFontSizelaySize` v = avatarCustomFontSize )
-                                         ( n = `avatarDisplaySize` v = avatarDisplaySize )
+                                         ( n = `avatarCustomDisplaySize` v = avatarcustomdisplaysize )
+                                         ( n = `avatarCustomDispavatarCustomFontSizelaySize` v = avatarcustomfontsize )
+                                         ( n = `avatarDisplaySize` v = avatardisplaysize )
                                          ( n = `blocked` v = /vno/2ui5_cl_util=>boolean_abap_2_json( blocked ) )
                                          ( n = `busy` v = /vno/2ui5_cl_util=>boolean_abap_2_json( busy ) )
-                                         ( n = `busyIndicatorDelay` v = busyIndicatorDelay )
-                                         ( n = `busyIndicatorSize` v = busyIndicatorSize )
-                                         ( n = `fieldGroupIds` v = fieldGroupIds )
-                                         ( n = `groupType` v = groupType )
+                                         ( n = `busyIndicatorDelay` v = busyindicatordelay )
+                                         ( n = `busyIndicatorSize` v = busyindicatorsize )
+                                         ( n = `fieldGroupIds` v = fieldgroupids )
+                                         ( n = `groupType` v = grouptype )
                                          ( n = `visible` v = /vno/2ui5_cl_util=>boolean_abap_2_json( visible ) )
-                                         ( n = `tooltip` v =  tooltip )
+                                         ( n = `tooltip` v = tooltip )
                                          ( n = `items` v = items )
                                          ( n = `press` v = press ) ) ).
   ENDMETHOD.
 
   METHOD avatar_group_item.
     result = me.
-    _generic( name   = `AvatarGroupItem`
+    _generic( name            = `AvatarGroupItem`
                        ns     = `f`
                        t_prop = VALUE #( ( n = `id` v = id )
                                          ( n = `busy` v = busy )
-                                         ( n = `busyIndicatorDelay` v = busyIndicatorDelay )
-                                         ( n = `busyIndicatorSize` v = busyIndicatorSize )
-                                         ( n = `fallbackIcon` v = fallbackIcon )
-                                         ( n = `fieldGroupIds` v = fieldGroupIds )
+                                         ( n = `busyIndicatorDelay` v = busyindicatordelay )
+                                         ( n = `busyIndicatorSize` v = busyindicatorsize )
+                                         ( n = `fallbackIcon` v = fallbackicon )
+                                         ( n = `fieldGroupIds` v = fieldgroupids )
                                          ( n = `initials` v = initials )
                                          ( n = `src` v = src )
-                                         ( n = `visible` v =  visible )
-                                         ( n = `tooltip` v =  tooltip ) ) ).
+                                         ( n = `visible` v = visible )
+                                         ( n = `tooltip` v = tooltip ) ) ).
   ENDMETHOD.
 
   METHOD axis_time_strategy.
@@ -5471,11 +5496,11 @@ CLASS /vno/2ui5_cl_xml_view IMPLEMENTATION.
                                          ( n = `scanFail`                  v = scanfail )
                                          ( n = `inputLiveUpdate`           v = inputliveupdate )
                                          ( n = `dialogTitle`               v = dialogtitle )
-                                         ( n = `disableBarcodeInputDialog` v = disableBarcodeInputDialog )
-                                         ( n = `frameRate`                 v = frameRate )
-                                         ( n = `keepCameraScan`            v = keepCameraScan )
-                                         ( n = `preferFrontCamera`         v = preferFrontCamera )
-                                         ( n = `provideFallback`           v = provideFallback )
+                                         ( n = `disableBarcodeInputDialog` v = disablebarcodeinputdialog )
+                                         ( n = `frameRate`                 v = framerate )
+                                         ( n = `keepCameraScan`            v = keepcamerascan )
+                                         ( n = `preferFrontCamera`         v = preferfrontcamera )
+                                         ( n = `provideFallback`           v = providefallback )
                                          ( n = `width`                     v = width )
                                          ( n = `zoom`                      v = zoom ) ) ).
   ENDMETHOD.
@@ -5997,7 +6022,7 @@ CLASS /vno/2ui5_cl_xml_view IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD comparison_micro_chart.
-    result = _generic( name   = `ComparisonMicroChart`
+    result = _generic( name  = `ComparisonMicroChart`
                       ns     = `mchart`
                       t_prop = VALUE #( ( n = `colorPalette`  v = colorpalette )
                                         ( n = `press`       v = press )
@@ -6018,9 +6043,9 @@ CLASS /vno/2ui5_cl_xml_view IMPLEMENTATION.
                        ns     = `mchart`
                        t_prop = VALUE #( ( n = `color`  v = color )
                                          ( n = `press`       v = press )
-                                         ( n = `displayValue`        v = displayValue )
+                                         ( n = `displayValue`        v = displayvalue )
                                          ( n = `title`      v = title )
-                                         ( n = `value`      v = value )  ) ).
+                                         ( n = `value`      v = value ) ) ).
   ENDMETHOD.
 
   METHOD constructor.
@@ -6114,7 +6139,7 @@ CLASS /vno/2ui5_cl_xml_view IMPLEMENTATION.
 
   METHOD custom_layout.
     result = _generic( name = `customLayout`
-                       ns   = ns  ).
+                       ns   = ns ).
   ENDMETHOD.
 
   METHOD custom_list_item.
@@ -6235,14 +6260,14 @@ CLASS /vno/2ui5_cl_xml_view IMPLEMENTATION.
                                          ( n = `visible` v = /vno/2ui5_cl_util=>boolean_abap_2_json( visible ) ) ) ).
   ENDMETHOD.
 
-  METHOD Drag_Drop_Info.
+  METHOD drag_drop_info.
     result = me.
     _generic( name   = `DragDropInfo`
               ns     = `dnd`
               t_prop = VALUE #(
-                ( n = `sourceAggregation`  v = sourceAggregation )
-                ( n = `targetAggregation`  v = targetAggregation )
-                ( n = `dragStart`          v = dragStart )
+                ( n = `sourceAggregation`  v = sourceaggregation )
+                ( n = `targetAggregation`  v = targetaggregation )
+                ( n = `dragStart`          v = dragstart )
                 ( n = `drop`               v = drop )
                  ) ).
   ENDMETHOD.
@@ -6251,13 +6276,12 @@ CLASS /vno/2ui5_cl_xml_view IMPLEMENTATION.
     result = me.
     _generic( name   = `DragInfo`
               ns     = `dnd`
-              t_prop = VALUE #( ( n = `sourceAggregation`  v = sourceAggregation ) ) ).
+              t_prop = VALUE #( ( n = `sourceAggregation`  v = sourceaggregation ) ) ).
   ENDMETHOD.
 
   METHOD drag_drop_config.
-    result = _generic( name = `dragDropConfig`
-                          ns   = ns
-                       ).
+    result = _generic( name  = `dragDropConfig`
+                          ns = ns ).
   ENDMETHOD.
 
   METHOD dynamic_page.
@@ -6872,9 +6896,9 @@ CLASS /vno/2ui5_cl_xml_view IMPLEMENTATION.
     result = me.
     _generic( name   = `GridBoxLayout`
               ns     = `grid`
-              t_prop = VALUE #( ( n = `boxesPerRowConfig`   v = boxesPerRowConfig )
-                                ( n = `boxMinWidth`   v = boxMinWidth )
-                                ( n = `boxWidth`   v = boxWidth ) ) ).
+              t_prop = VALUE #( ( n = `boxesPerRowConfig`   v = boxesperrowconfig )
+                                ( n = `boxMinWidth`   v = boxminwidth )
+                                ( n = `boxWidth`   v = boxwidth ) ) ).
   ENDMETHOD.
 
   METHOD grid_data.
@@ -6891,12 +6915,12 @@ CLASS /vno/2ui5_cl_xml_view IMPLEMENTATION.
     result = me.
     _generic( name   = `GridDropInfo`
               ns     = `dnd-grid`
-              t_prop = VALUE #( ( n = `targetAggregation`      v = targetAggregation )
-                                ( n = `dropPosition` v = dropPosition )
-                                ( n = `dropLayout` v = dropLayout )
+              t_prop = VALUE #( ( n = `targetAggregation`      v = targetaggregation )
+                                ( n = `dropPosition` v = dropposition )
+                                ( n = `dropLayout` v = droplayout )
                                 ( n = `drop`   v = drop )
-                                ( n = `dragEnter`   v = dragEnter )
-                                ( n = `dragOver`   v = dragOver ) ) ).
+                                ( n = `dragEnter`   v = dragenter )
+                                ( n = `dragOver`   v = dragover ) ) ).
   ENDMETHOD.
 
   METHOD grid_list.
@@ -6906,31 +6930,31 @@ CLASS /vno/2ui5_cl_xml_view IMPLEMENTATION.
                  t_prop = VALUE #(
                      ( n = `id`      v = id )
                      ( n = `busy` v = /vno/2ui5_cl_util=>boolean_abap_2_json( busy ) )
-                     ( n = `busyIndicatorDelay` v = busyIndicatorDelay )
-                     ( n = `busyIndicatorSize` v = busyIndicatorSize )
-                     ( n = `enableBusyIndicator` v = /vno/2ui5_cl_util=>boolean_abap_2_json( enableBusyIndicator ) )
-                     ( n = `fieldGroupIds` v = fieldGroupIds )
-                     ( n = `footerText` v = footerText )
+                     ( n = `busyIndicatorDelay` v = busyindicatordelay )
+                     ( n = `busyIndicatorSize` v = busyindicatorsize )
+                     ( n = `enableBusyIndicator` v = /vno/2ui5_cl_util=>boolean_abap_2_json( enablebusyindicator ) )
+                     ( n = `fieldGroupIds` v = fieldgroupids )
+                     ( n = `footerText` v = footertext )
                      ( n = `growing` v = /vno/2ui5_cl_util=>boolean_abap_2_json( growing ) )
-                     ( n = `growingDirection` v = growingDirection )
-                     ( n = `growingScrollToLoad` v = /vno/2ui5_cl_util=>boolean_abap_2_json( growingScrollToLoad ) )
-                     ( n = `growingThreshold` v = growingThreshold )
-                     ( n = `growingTriggerText` v = growingTriggerText )
-                     ( n = `headerLevel` v = headerLevel )
-                     ( n = `headerText` v = headerText )
-                     ( n = `includeItemInSelection` v = /vno/2ui5_cl_util=>boolean_abap_2_json( includeItemInSelection ) )
+                     ( n = `growingDirection` v = growingdirection )
+                     ( n = `growingScrollToLoad` v = /vno/2ui5_cl_util=>boolean_abap_2_json( growingscrolltoload ) )
+                     ( n = `growingThreshold` v = growingthreshold )
+                     ( n = `growingTriggerText` v = growingtriggertext )
+                     ( n = `headerLevel` v = headerlevel )
+                     ( n = `headerText` v = headertext )
+                     ( n = `includeItemInSelection` v = /vno/2ui5_cl_util=>boolean_abap_2_json( includeiteminselection ) )
                      ( n = `inset` v = /vno/2ui5_cl_util=>boolean_abap_2_json( inset ) )
-                     ( n = `keyboardMode` v = keyboardMode )
+                     ( n = `keyboardMode` v = keyboardmode )
                      ( n = `mode` v = mode )
-                     ( n = `modeAnimationOn` v = modeAnimationOn )
-                     ( n = `multiSelectMode` v = multiSelectMode )
-                     ( n = `noDataText` v = noDataText )
-                     ( n = `rememberSelections` v = /vno/2ui5_cl_util=>boolean_abap_2_json( rememberSelections ) )
-                     ( n = `showNoData` v = /vno/2ui5_cl_util=>boolean_abap_2_json( showNoData ) )
-                     ( n = `showSeparators` v = showSeparators )
-                     ( n = `showUnread` v = /vno/2ui5_cl_util=>boolean_abap_2_json( showUnread ) )
+                     ( n = `modeAnimationOn` v = modeanimationon )
+                     ( n = `multiSelectMode` v = multiselectmode )
+                     ( n = `noDataText` v = nodatatext )
+                     ( n = `rememberSelections` v = /vno/2ui5_cl_util=>boolean_abap_2_json( rememberselections ) )
+                     ( n = `showNoData` v = /vno/2ui5_cl_util=>boolean_abap_2_json( shownodata ) )
+                     ( n = `showSeparators` v = showseparators )
+                     ( n = `showUnread` v = /vno/2ui5_cl_util=>boolean_abap_2_json( showunread ) )
                      ( n = `sticky` v = sticky )
-                     ( n = `swipeDirection` v = swipeDirection )
+                     ( n = `swipeDirection` v = swipedirection )
                      ( n = `visible` v = /vno/2ui5_cl_util=>boolean_abap_2_json( visible ) )
                      ( n = `width` v = width )
                      ( n = `items`   v = items ) ) ).
@@ -6940,19 +6964,19 @@ CLASS /vno/2ui5_cl_xml_view IMPLEMENTATION.
     result = _generic( name   = `GridListItem`
                        ns     = `f`
                        t_prop = VALUE #( ( n = `busy`      v = busy )
-                                         ( n = `busyIndicatorDelay` v = busyIndicatorDelay )
-                                         ( n = `busyIndicatorSize` v = busyIndicatorSize )
+                                         ( n = `busyIndicatorDelay` v = busyindicatordelay )
+                                         ( n = `busyIndicatorSize` v = busyindicatorsize )
                                          ( n = `counter` v = counter )
-                                         ( n = `fieldGroupIds` v = fieldGroupIds )
+                                         ( n = `fieldGroupIds` v = fieldgroupids )
                                          ( n = `highlight` v = highlight )
-                                         ( n = `highlightText` v = highlightText )
+                                         ( n = `highlightText` v = highlighttext )
                                          ( n = `navigated` v = navigated )
                                          ( n = `selected` v = selected )
                                          ( n = `type` v = type )
                                          ( n = `unread` v = unread )
                                          ( n = `visible`   v = visible )
-                                         ( n = `detailPress` v = detailPress )
-                                         ( n = `detailTap` v = detailTap )
+                                         ( n = `detailPress` v = detailpress )
+                                         ( n = `detailTap` v = detailtap )
                                          ( n = `press` v = press )
                                          ( n = `tap` v = tap ) ) ).
   ENDMETHOD.
@@ -6988,9 +7012,9 @@ CLASS /vno/2ui5_cl_xml_view IMPLEMENTATION.
 
   METHOD harvey_ball_micro_chart.
 
-    result = _generic( name   = `HarveyBallMicroChart`
-              ns     = `mchart`
-              t_prop = VALUE #( ( n = `colorPalette`  v = colorpalette )
+    result = _generic( name = `HarveyBallMicroChart`
+              ns            = `mchart`
+              t_prop        = VALUE #( ( n = `colorPalette`  v = colorpalette )
                                 ( n = `press`       v = press )
                                 ( n = `size`        v = size )
                                 ( n = `height`      v = height )
@@ -7750,7 +7774,7 @@ CLASS /vno/2ui5_cl_xml_view IMPLEMENTATION.
                        t_prop = VALUE #(
                            ( n = `id`  v = id )
                            ( n = `autoAdjustHeight`  v = /vno/2ui5_cl_util=>boolean_abap_2_json( autoadjustheight ) )
-                           ( n = `showHome`  v = /vno/2ui5_cl_util=>boolean_abap_2_json( showHome )  )  ) ).
+                           ( n = `showHome`  v = /vno/2ui5_cl_util=>boolean_abap_2_json( showhome ) ) ) ).
 
   ENDMETHOD.
 
@@ -7949,6 +7973,7 @@ CLASS /vno/2ui5_cl_xml_view IMPLEMENTATION.
         t_prop = VALUE #( ( n = `tokens` v = tokens )
                           ( n = `showClearIcon` v = /vno/2ui5_cl_util=>boolean_abap_2_json( showclearicon ) )
                           ( n = `name` v = name )
+                          ( n = `valueHelpOnly` v = /vno/2ui5_cl_util=>boolean_abap_2_json( valuehelponly ) )
                           ( n = `showValueHelp` v = /vno/2ui5_cl_util=>boolean_abap_2_json( showvaluehelp ) )
                           ( n = `enabled` v = /vno/2ui5_cl_util=>boolean_abap_2_json( enabled ) )
                           ( n = `suggestionItems` v = suggestionitems )
@@ -9288,7 +9313,7 @@ CLASS /vno/2ui5_cl_xml_view IMPLEMENTATION.
                                 ( n = `inputsAsTooltips`   v = inputsastooltips )
                                 ( n = `showAdvancedTooltip`   v = showadvancedtooltip )
                                 ( n = `showHandleTooltip`   v = showhandletooltip )
-                                ( n = `liveChange` v = liveChange ) ) ).
+                                ( n = `liveChange` v = livechange ) ) ).
   ENDMETHOD.
 
   METHOD slide_tile.
@@ -9313,7 +9338,7 @@ CLASS /vno/2ui5_cl_xml_view IMPLEMENTATION.
         t_prop = VALUE #(
             ( n = `id`      v = id )
             ( n = `showExecuteOnSelection`  v = /vno/2ui5_cl_util=>boolean_abap_2_json( showexecuteonselection ) )
-            ( n = `persistencyKey`  v = persistencyKey )
+            ( n = `persistencyKey`  v = persistencykey )
              ) ).
 
   ENDMETHOD.
@@ -9957,7 +9982,7 @@ CLASS /vno/2ui5_cl_xml_view IMPLEMENTATION.
     DATA(lv_name) = COND #(
         WHEN ns = 'table' THEN 'toolbar'
         WHEN ns = 'form'  THEN 'toolbar'
-        ELSE                   `Toolbar` ).
+        ELSE `Toolbar` ).
     result = _generic( name   = lv_name
                        ns     = ns
                        t_prop = VALUE #( ( n = `active`  v = /vno/2ui5_cl_util=>boolean_abap_2_json( active ) )
@@ -10087,6 +10112,12 @@ CLASS /vno/2ui5_cl_xml_view IMPLEMENTATION.
                        ns   = `table` ).
 
   ENDMETHOD.
+
+  METHOD tree_extension.
+    result = _generic( ns   = `table`
+                       name = `extension` ).
+  ENDMETHOD.
+
 
   METHOD two_columns_layout.
     result = _generic( name = `TwoColumnsLayout`
@@ -10609,7 +10640,7 @@ CLASS /vno/2ui5_cl_xml_view IMPLEMENTATION.
           ( n = `trm`               v = `sap.ui.table.rowmodes` )
           ( n = `smi`               v = `sap.ui.comp.smartmultiinput` ) ).
 
-      LOOP AT mt_ns REFERENCE INTO DATA(lr_ns) WHERE     table_line IS NOT INITIAL
+      LOOP AT mt_ns REFERENCE INTO DATA(lr_ns) WHERE table_line IS NOT INITIAL
                                                      AND table_line <> `mvc`
                                                      AND table_line <> `core`.
         TRY.
@@ -10617,14 +10648,16 @@ CLASS /vno/2ui5_cl_xml_view IMPLEMENTATION.
             INSERT VALUE #( n = |xmlns:{ ls_prop-n }|
                             v = ls_prop-v ) INTO TABLE mt_prop.
           CATCH cx_root.
-            /vno/2ui5_cl_util=>x_raise( |XML_VIEW_ERROR_NO_NAMESPACE_FOUND_FOR:  { lr_ns->* }| ).
+            RAISE EXCEPTION TYPE /vno/2ui5_cx_util_error
+              EXPORTING
+                val = |XML_VIEW_ERROR_NO_NAMESPACE_FOUND_FOR:  { lr_ns->* }|.
         ENDTRY.
       ENDLOOP.
 
     ENDIF.
 
     DATA(lv_tmp2) = COND #( WHEN mv_ns <> `` THEN |{ mv_ns }:| ).
-    DATA(lv_tmp3) = REDUCE #( INIT val = `` FOR row IN mt_prop WHERE ( v <> `` )
+    DATA(lv_tmp3) = REDUCE string( INIT val = `` FOR row IN mt_prop WHERE ( v <> `` )
                           NEXT val = |{ val } { row-n }="{ escape( val    = COND string( WHEN row-v = abap_true
                                                                                          THEN `true`
                                                                                          ELSE row-v )
@@ -10905,7 +10938,7 @@ CLASS /vno/2ui5_cl_xml_view IMPLEMENTATION.
                                          ( n = `id`                      v = id )
                                          ( n = `class`                   v = class )
                                          ( n = `currentLocationText`     v = currentlocationtext )
-                                         ( n = `separatorStyle`          v = separatorStyle )
+                                         ( n = `separatorStyle`          v = separatorstyle )
                                          ( n = `visible`                 v = /vno/2ui5_cl_util=>boolean_abap_2_json( visible ) ) ) ).
   ENDMETHOD.
 
@@ -10921,7 +10954,7 @@ CLASS /vno/2ui5_cl_xml_view IMPLEMENTATION.
                        t_prop = VALUE #( ( n = `colorSelect`           v = colorselect ) ) ).
   ENDMETHOD.
 
-  METHOD HarveyBallMicroChartItem.
+  METHOD harveyballmicrochartitem.
 
     result = _generic( name   = `HarveyBallMicroChartItem`
                        ns     = `mchart`
@@ -10929,7 +10962,7 @@ CLASS /vno/2ui5_cl_xml_view IMPLEMENTATION.
                                          ( n = `class`  v = class )
                                          ( n = `fraction`  v = fraction )
                                          ( n = `color`  v = color )
-                                         ( n = `fractionScale` v = fractionScale ) ) ).
+                                         ( n = `fractionScale` v = fractionscale ) ) ).
   ENDMETHOD.
 
   METHOD smart_filter_bar.
@@ -10937,70 +10970,69 @@ CLASS /vno/2ui5_cl_xml_view IMPLEMENTATION.
     result = _generic( name   = `SmartFilterBar`
                        ns     = `smartFilterBar`
                        t_prop = VALUE #( ( n = `id`  v = id )
-                                         ( n = `entitySet`  v = entitySet )
-                                         ( n = `persistencyKey`  v = persistencyKey ) ) ).
+                                         ( n = `entitySet`  v = entityset )
+                                         ( n = `persistencyKey`  v = persistencykey ) ) ).
 
   ENDMETHOD.
 
   METHOD control_configuration.
 
     result = me.
-    _generic( name   = `ControlConfiguration`
+    _generic( name             = `ControlConfiguration`
                         ns     = `smartFilterBar`
                         t_prop = VALUE #( ( n = `id`  v = id )
                                           ( n = `key`  v = key )
-                                          ( n = `visibleInAdvancedArea`  v = /vno/2ui5_cl_util=>boolean_abap_2_json( visibleInAdvancedArea ) )
-                                          ( n = `preventInitialDataFetchInValueHelpDialog`  v = /vno/2ui5_cl_util=>boolean_abap_2_json( prevInitDataFetchInValHelpDia ) )
+                                          ( n = `visibleInAdvancedArea`  v = /vno/2ui5_cl_util=>boolean_abap_2_json( visibleinadvancedarea ) )
+                                          ( n = `preventInitialDataFetchInValueHelpDialog`  v = /vno/2ui5_cl_util=>boolean_abap_2_json( previnitdatafetchinvalhelpdia ) )
                                           ) ).
 
   ENDMETHOD.
 
   METHOD smart_table.
 
-    result = _generic( name   = `SmartTable`
+    result = _generic( name    = `SmartTable`
                         ns     = `smartTable`
                         t_prop = VALUE #(
                         ( n = `id`  v = id )
-                        ( n = `smartFilterId`  v = smartFilterId )
-                                          ( n = `tableType`  v = tableType )
+                        ( n = `smartFilterId`  v = smartfilterid )
+                                          ( n = `tableType`  v = tabletype )
                                           ( n = `editable`  v = /vno/2ui5_cl_util=>boolean_abap_2_json( editable ) )
-                                          ( n = `initiallyVisibleFields`  v = initiallyVisibleFields )
-                                          ( n = `entitySet`  v = entitySet )
-                                          ( n = `useVariantManagement`  v = /vno/2ui5_cl_util=>boolean_abap_2_json( useVariantManagement ) )
-                                          ( n = `useExportToExcel`  v = /vno/2ui5_cl_util=>boolean_abap_2_json( useExportToExcel ) )
-                                          ( n = `useTablePersonalisation`  v = /vno/2ui5_cl_util=>boolean_abap_2_json( useTablePersonalisation ) )
+                                          ( n = `initiallyVisibleFields`  v = initiallyvisiblefields )
+                                          ( n = `entitySet`  v = entityset )
+                                          ( n = `useVariantManagement`  v = /vno/2ui5_cl_util=>boolean_abap_2_json( usevariantmanagement ) )
+                                          ( n = `useExportToExcel`  v = /vno/2ui5_cl_util=>boolean_abap_2_json( useexporttoexcel ) )
+                                          ( n = `useTablePersonalisation`  v = /vno/2ui5_cl_util=>boolean_abap_2_json( usetablepersonalisation ) )
                                           ( n = `header`  v = header )
-                                          ( n = `showRowCount`  v =  /vno/2ui5_cl_util=>boolean_abap_2_json( showRowCount ) )
-                                          ( n = `enableExport`  v =  /vno/2ui5_cl_util=>boolean_abap_2_json( enableExport ) )
-                                          ( n = `enableAutoBinding`  v =  /vno/2ui5_cl_util=>boolean_abap_2_json( enableAutoBinding ) )
+                                          ( n = `showRowCount`  v = /vno/2ui5_cl_util=>boolean_abap_2_json( showrowcount ) )
+                                          ( n = `enableExport`  v = /vno/2ui5_cl_util=>boolean_abap_2_json( enableexport ) )
+                                          ( n = `enableAutoBinding`  v = /vno/2ui5_cl_util=>boolean_abap_2_json( enableautobinding ) )
                                           ) ).
 
   ENDMETHOD.
 
   METHOD _control_configuration.
 
-    result = _generic( name   = `controlConfiguration`
-                        ns     = `smartFilterBar`
-                      ).
+    result = _generic( name = `controlConfiguration`
+                        ns  = `smartFilterBar` ).
 
   ENDMETHOD.
 
   METHOD viz_dataset.
-    result = _generic( name   = 'dataset'
-                       ns     = 'viz' ).
+    result = _generic( name = 'dataset'
+                       ns   = 'viz' ).
   ENDMETHOD.
 
 
   METHOD viz_dimensions.
-    result = _generic( name   = 'dimensions'
-                       ns     = 'viz.data' ).
+    result = _generic( name = 'dimensions'
+                       ns   = 'viz.data' ).
   ENDMETHOD.
 
 
   METHOD viz_dimension_definition.
     result = _generic( name   = 'DimensionDefinition'
                        ns     = 'viz.data'
-                       t_prop = VALUE #(  ( n = `axis`          v = axis )
+                       t_prop = VALUE #( ( n = `axis`          v = axis )
                                           ( n = `dataType`      v = datatype )
                                           ( n = `displayValue`  v = displayvalue )
                                           ( n = `identity`      v = identity )
@@ -11011,15 +11043,15 @@ CLASS /vno/2ui5_cl_xml_view IMPLEMENTATION.
 
 
   METHOD viz_feeds.
-    result = _generic( name   = 'feeds'
-                       ns     = 'viz' ).
+    result = _generic( name = 'feeds'
+                       ns   = 'viz' ).
   ENDMETHOD.
 
 
   METHOD viz_feed_item.
     result = _generic( name   = 'FeedItem'
                        ns     = 'viz.feeds'
-                       t_prop = VALUE #(  ( n = `id`      v = id )
+                       t_prop = VALUE #( ( n = `id`      v = id )
                                           ( n = `uid`     v = uid )
                                           ( n = `type`    v = type )
                                           ( n = `values ` v = values ) ) ).
@@ -11036,36 +11068,36 @@ CLASS /vno/2ui5_cl_xml_view IMPLEMENTATION.
   METHOD viz_frame.
     DATA(lv_vizproperties) = ``.
     IF vizproperties IS INITIAL.
-      lv_vizproperties = `{` && |\n|  &&
-      `"plotArea": {` && |\n|  &&
-          `"dataLabel": {` && |\n|  &&
-              `"formatString": "",` && |\n|  &&
-              `"visible": false` && |\n|  &&
-          `}` && |\n|  &&
-      `},` && |\n|  &&
-      `"valueAxis": {` && |\n|  &&
-          `"label": {` && |\n|  &&
-              `"formatString": ""` && |\n|  &&
-          `},` && |\n|  &&
-          `"title": {` && |\n|  &&
-              `"visible": false` && |\n|  &&
-          `}` && |\n|  &&
-      `},` && |\n|  &&
-      `"categoryAxis": {` && |\n|  &&
-          `"title": {` && |\n|  &&
-              `"visible": false` && |\n|  &&
-          `}` && |\n|  &&
-      `},` && |\n|  &&
-      `"title": {` && |\n|  &&
-          `"visible": false,` && |\n|  &&
-          `"text": ""` && |\n|  &&
-      `}` && |\n|  &&
-  `}`.
+      lv_vizproperties = `{` && |\n| &&
+        `"plotArea": {` && |\n| &&
+          `"dataLabel": {` && |\n| &&
+              `"formatString": "",` && |\n| &&
+              `"visible": false` && |\n| &&
+          `}` && |\n| &&
+        `},` && |\n| &&
+        `"valueAxis": {` && |\n| &&
+          `"label": {` && |\n| &&
+              `"formatString": ""` && |\n| &&
+          `},` && |\n| &&
+          `"title": {` && |\n| &&
+              `"visible": false` && |\n| &&
+          `}` && |\n| &&
+        `},` && |\n| &&
+        `"categoryAxis": {` && |\n| &&
+          `"title": {` && |\n| &&
+              `"visible": false` && |\n| &&
+          `}` && |\n| &&
+        `},` && |\n| &&
+        `"title": {` && |\n| &&
+          `"visible": false,` && |\n| &&
+          `"text": ""` && |\n| &&
+        `}` && |\n| &&
+        `}`.
     ELSE.
       lv_vizproperties = vizproperties.
     ENDIF.
 
-    result = _generic(  name   = 'VizFrame'
+    result = _generic( name    = 'VizFrame'
                         ns     = 'viz'
                         t_prop = VALUE #( ( n = `id`                v = id )
                                           ( n = `legendVisible`     v = legendvisible )
@@ -11083,14 +11115,14 @@ CLASS /vno/2ui5_cl_xml_view IMPLEMENTATION.
 
 
   METHOD viz_measures.
-    result = _generic( name   = 'measures'
-                       ns     = 'viz.data' ).
+    result = _generic( name = 'measures'
+                       ns   = 'viz.data' ).
   ENDMETHOD.
 
   METHOD viz_measure_definition.
     result = _generic( name   = 'MeasureDefinition'
                        ns     = 'viz.data'
-                       t_prop = VALUE #(  ( n = `format`    v = format )
+                       t_prop = VALUE #( ( n = `format`    v = format )
                                           ( n = `group`     v = group )
                                           ( n = `identity`  v = identity )
                                           ( n = `name`      v = name )
@@ -11120,4 +11152,22 @@ CLASS /vno/2ui5_cl_xml_view IMPLEMENTATION.
 
   ENDMETHOD.
 
+  METHOD overflow_toolbar_layout_data.
+
+    result = _generic(
+        name   = `OverflowToolbarLayoutData`
+        t_prop = VALUE #(
+            ( n = `closeOverflowOnInteraction` v = /vno/2ui5_cl_util=>boolean_abap_2_json( closeoverflowoninteraction ) )
+            ( n = `group`                      v = group )
+            ( n = `priority`                   v = priority ) ) ).
+
+  ENDMETHOD.
+
+  METHOD row_settings.
+    result = _generic( name    = `RowSettings`
+                       ns      = `table`
+                        t_prop = VALUE #( ( n = `highlight`       v = highlight )
+                                          ( n = `highlightText`   v = highlighttext )
+                                          ( n = `navigated`       v = /vno/2ui5_cl_util=>boolean_abap_2_json( navigated ) ) ) ).
+  ENDMETHOD.
 ENDCLASS.
