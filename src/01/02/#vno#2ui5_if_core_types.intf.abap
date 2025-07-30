@@ -16,12 +16,6 @@ INTERFACE /vno/2ui5_if_core_types
     END OF cs_bind_type.
 
   TYPES:
-    BEGIN OF ty_s_http_req,
-      method TYPE string,
-      body   TYPE string,
-    END OF ty_s_http_req.
-
-  TYPES:
     BEGIN OF ty_s_http_res,
       body          TYPE string,
       status_code   TYPE i,
@@ -50,6 +44,8 @@ INTERFACE /vno/2ui5_if_core_types
     BEGIN OF ty_s_attri,
       name               TYPE string,
       name_client        TYPE string,
+      name_parent        TYPE string,
+      name_ref           TYPE string,
       bind_type          TYPE string,
       srtti_data         TYPE string,
       check_dissolved    TYPE abap_bool,
@@ -59,8 +55,11 @@ INTERFACE /vno/2ui5_if_core_types
       custom_filter_back TYPE REF TO /vno/2ui5_if_ajson_filter,
       custom_mapper      TYPE REF TO /vno/2ui5_if_ajson_mapping,
       custom_mapper_back TYPE REF TO /vno/2ui5_if_ajson_mapping,
-      r_ref              TYPE REF TO data,
+*      r_ref              TYPE REF TO data,
       o_typedescr        TYPE REF TO cl_abap_typedescr,
+      type_kind          TYPE string,
+      kind               TYPE string,
+*      is_class           TYPE abap_bool,
     END OF ty_s_attri.
   TYPES ty_t_attri TYPE SORTED TABLE OF ty_s_attri WITH UNIQUE KEY name.
 
@@ -68,7 +67,7 @@ INTERFACE /vno/2ui5_if_core_types
     BEGIN OF ty_s_next_frontend,
       BEGIN OF s_view,
         xml                       TYPE string,
-        switchDefaultModelAnnoURI TYPE string,
+        switchdefaultmodelannouri TYPE string,
         switch_default_model_path TYPE string,
         check_destroy             TYPE abap_bool,
         check_update_model        TYPE abap_bool,
@@ -209,7 +208,5 @@ INTERFACE /vno/2ui5_if_core_types
       s_config           TYPE ty_s_config,
       r_data             TYPE REF TO data,
     END OF ty_s_actual.
-
-  TYPES ty_s_db TYPE /vno/2ui5_t_01.
 
 ENDINTERFACE.

@@ -9,6 +9,21 @@ INTERFACE /vno/2ui5_if_types
   TYPES ty_t_name_value TYPE STANDARD TABLE OF ty_s_name_value WITH EMPTY KEY.
 
   TYPES:
+    BEGIN OF ty_s_http_context,
+      path      TYPE string,
+      app_start TYPE string,
+      t_params  TYPE ty_t_name_value,
+    END OF ty_s_http_context.
+
+  TYPES:
+    BEGIN OF ty_s_draft,
+      id                TYPE string,
+      id_prev           TYPE string,
+      id_prev_app       TYPE string,
+      id_prev_app_stack TYPE string,
+    END OF ty_s_draft.
+
+  TYPES:
     BEGIN OF ty_s_http_config,
       src                     TYPE string,
       theme                   TYPE string,
@@ -20,12 +35,9 @@ INTERFACE /vno/2ui5_if_types
     END OF ty_s_http_config.
 
   TYPES:
-    BEGIN OF ty_s_draft,
-      id                TYPE string,
-      id_prev           TYPE string,
-      id_prev_app       TYPE string,
-      id_prev_app_stack TYPE string,
-    END OF ty_s_draft.
+    BEGIN OF ty_s_http_config_post,
+      draft_exp_time_in_hours TYPE i,
+    END OF ty_s_http_config_post.
 
   TYPES:
     BEGIN OF ty_s_config,
@@ -47,6 +59,10 @@ INTERFACE /vno/2ui5_if_types
       s_config               TYPE ty_s_config,
       t_comp_params          TYPE ty_t_name_value,
       r_event_data           TYPE REF TO data,
+      BEGIN OF _s_nav,
+        check_leave TYPE abap_bool,
+        check_call  TYPE abap_bool,
+      END OF _s_nav,
     END OF ty_s_get.
 
   TYPES:
