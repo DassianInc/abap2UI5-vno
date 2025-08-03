@@ -106,7 +106,7 @@ CLASS /vno/2ui5_cl_app_server_js IMPLEMENTATION.
              `                        'sap-contextid-accept': 'header',` && |\n| &&
              `                        'sap-contextid': z2ui5.contextId` && |\n| &&
              `                    },` && |\n| &&
-             `                    body: JSON.stringify(z2ui5.oBody)` && |\n| &&
+             `                    body: JSON.stringify( { 'value' : z2ui5.oBody } )` && |\n| &&
              `                });` && |\n| &&
              `                z2ui5.contextId = response.headers.get("sap-contextid");` && |\n| &&
              `                if (!response.ok) {` && |\n| &&
@@ -172,6 +172,7 @@ CLASS /vno/2ui5_cl_app_server_js IMPLEMENTATION.
              `            },` && |\n| &&
              `        };` && |\n| &&
              `    });` && |\n| &&
+             `` && |\n| &&
               ``.
 
   ENDMETHOD.
