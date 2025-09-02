@@ -52,6 +52,7 @@ CLASS /vno/2ui5_cl_core_handler IMPLEMENTATION.
     TRY.
 
         DATA(lo_ajson) = CAST /vno/2ui5_if_ajson( /vno/2ui5_cl_ajson=>parse( val ) ).
+        lo_ajson = lo_ajson->slice( 'value' ).
 
         DATA(lv_model_edit_name) = |/{ /vno/2ui5_if_core_types=>cs_ui5-two_way_model }|.
 
